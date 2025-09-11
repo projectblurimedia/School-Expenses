@@ -4,12 +4,12 @@ import "./home.scss"
 
 function Home() {
   return (
-    <div className="schoolExpensesWebsiteContainer">
+    <div className="homeContainer">
       Let's build our First Earning Project
       <br />
-      <FontAwesomeIcon icon={faCoffee} /> {/* Example icon */}
+      <FontAwesomeIcon icon={faCoffee} />
     </div>
-  );
+  )
 }
 
 export default Home;
