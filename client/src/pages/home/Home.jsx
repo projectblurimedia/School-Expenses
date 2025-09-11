@@ -1,9 +1,15 @@
-import './home.scss'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCoffee } from '@fortawesome/free-solid-svg-icons';
+import "./home.scss"
 
-const Home = () => {
+function Home() {
   return (
-    <div>Home</div>
-  )
+    <div className="schoolExpensesWebsiteContainer">
+      Let's build our First Earning Project
+      <br />
+      <FontAwesomeIcon icon={faCoffee} /> {/* Example icon */}
+    </div>
+  );
 }
 
-export default Home
+export default Home;
