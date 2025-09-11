@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faPlus } from '@fortawesome/free-solid-svg-icons'
-import "./home.scss"
+import './Home.scss'
 
 function Home() {
   const todayDate = new Date().toLocaleDateString(undefined, {
@@ -14,147 +14,61 @@ function Home() {
       <div className="headerImageContainer">
         <img
           src="https://static.vecteezy.com/system/resources/previews/011/844/721/non_2x/back-to-school-horizontal-banner-with-colorful-lettering-online-courses-learning-and-tutorials-web-page-template-online-education-concept-free-vector.jpg"
-          alt="Sai Rakesh E.M High School Logo"
+          alt="School Campus"
           className='headerImage'
         />
-      </div>
-
-      <div className="titleContainer">
-        <div className="title">Expenses Tracking System</div>
+        <div className="imageOverlay">
+          <h1>Expenses Tracking System</h1>
+          <p>Sai Rakesh E.M High School</p>
+        </div>
       </div>
 
       <div className="todayExpensesContainer">
         <div className="todayHeading">
-          <div className="title">Today</div>
+          <div className="title">Today's Expenses</div>
           <div className="date">{todayDate}</div>
         </div>
 
-        <table className="expensesTable">
-          <thead>
-            <tr>
-              <th>S.No</th>
-              <th>Category</th>
-              <th>Item Name</th>
-              <th>Quantity</th>
-              <th>Cost</th>
-              <th>Person Name</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td>Stationery</td>
-              <td>Notebooks</td>
-              <td>5</td>
-              <td>115/-</td>
-              <td>John Doe</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Food</td>
-              <td>Lunch</td>
-              <td>1</td>
-              <td>80/-</td>
-              <td>Jane Smith</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Food</td>
-              <td>Lunch</td>
-              <td>1</td>
-              <td>80/-</td>
-              <td>Jane Smith</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Food</td>
-              <td>Lunch</td>
-              <td>1</td>
-              <td>80/-</td>
-              <td>Jane Smith</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Food</td>
-              <td>Lunch</td>
-              <td>1</td>
-              <td>80/-</td>
-              <td>Jane Smith</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Food</td>
-              <td>Lunch</td>
-              <td>1</td>
-              <td>80/-</td>
-              <td>Jane Smith</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Food</td>
-              <td>Lunch</td>
-              <td>1</td>
-              <td>80/-</td>
-              <td>Jane Smith</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Food</td>
-              <td>Lunch</td>
-              <td>1</td>
-              <td>80/-</td>
-              <td>Jane Smith</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Food</td>
-              <td>Lunch</td>
-              <td>1</td>
-              <td>80/-</td>
-              <td>Jane Smith</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Food</td>
-              <td>Lunch</td>
-              <td>1</td>
-              <td>80/-</td>
-              <td>Jane Smith</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Food</td>
-              <td>Lunch</td>
-              <td>1</td>
-              <td>80/-</td>
-              <td>Jane Smith</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Food</td>
-              <td>Lunch</td>
-              <td>1</td>
-              <td>80/-</td>
-              <td>Jane Smith</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Food</td>
-              <td>Lunch</td>
-              <td>1</td>
-              <td>80/-</td>
-              <td>Jane Smith</td>
-            </tr>
-          </tbody>
-        </table>
+        <div className="tableWrapper">
+          <table className="expensesTable">
+            <thead>
+              <tr>
+                <th>S.No</th>
+                <th>Category</th>
+                <th>Item Name</th>
+                <th>Quantity</th>
+                <th>Cost</th>
+                <th>Person Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[...Array(15)].map((_, index) => (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+                  <td>
+                    <span className='category'>
+                      {index % 3 === 0 ? 'Stationery' : index % 3 === 1 ? 'Food' : 'Books'}
+                    </span>
+                  </td>
+                  <td>{index % 3 === 0 ? 'Notebooks' : index % 3 === 1 ? 'Lunch' : 'Textbooks'}</td>
+                  <td>{index % 3 === 0 ? '5' : index % 3 === 1 ? '1' : '3'}</td>
+                  <td>{index % 3 === 0 ? '115/-' : index % 3 === 1 ? '80/-' : '450/-'}</td>
+                  <td>{index % 2 === 0 ? 'John Doe' : 'Jane Smith'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div className="viewAndCreateButtonsContainer">
         <div className="viewButton">
           <FontAwesomeIcon icon={faEye} />
+          <span>View Reports</span>
         </div>
         <div className="createButton">
           <FontAwesomeIcon icon={faPlus} />
+          <span>Add Expense</span>
         </div>
       </div>
     </div>
