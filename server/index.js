@@ -36,6 +36,8 @@ app.use((error, req, res, next) => {
 
 })
 
+console.log("Let's start")
+
 // Server Connection
 app.listen(process.env.PORT || 8000, () => {
     console.log(`Server is running on http://localhost:${process.env.PORT}`)
