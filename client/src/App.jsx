@@ -4,6 +4,7 @@ function App() {
   return (
     <div className="schoolExpensesWebsiteContainer">
       Mabbu Weds Chingu
+      Eeeeeeeewwwwwwwwwwww
     </div>
   )
 }
