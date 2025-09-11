@@ -1,0 +1,8 @@
+.schoolExpensesWebsiteContainer{
+  background-color: #001727;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
