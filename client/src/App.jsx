@@ -3,7 +3,7 @@ import './App.css'
 function App() {
   return (
     <div className="schoolExpensesWebsiteContainer">
-      Mabbu Chingu
+      Mabbu Weds Chingu
     </div>
   )
 }
