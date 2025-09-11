@@ -3,7 +3,7 @@ import './App.css'
 function App() {
   return (
     <div className="schoolExpensesWebsiteContainer">
-      Let's build project
+      Let's build our first earning project
     </div>
   )
 }
