@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faPlus } from '@fortawesome/free-solid-svg-icons'
 import './Home.scss'
+import AddExpense from '../../components/addExpense/AddExpense'
 
 function Home() {
   const todayDate = new Date().toLocaleDateString(undefined, {
@@ -35,10 +36,10 @@ function Home() {
               <tr>
                 <th>S.No</th>
                 <th>Category</th>
-                <th>Item Name</th>
+                <th>Item</th>
                 <th>Quantity</th>
                 <th>Cost</th>
-                <th>Person Name</th>
+                <th>Person</th>
               </tr>
             </thead>
             <tbody>
@@ -71,6 +72,11 @@ function Home() {
           <span>Add Expense</span>
         </div>
       </div>
+
+      {
+        !true && 
+        <AddExpense />
+      }
     </div>
   )
 }

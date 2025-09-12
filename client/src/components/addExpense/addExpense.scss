@@ -1,0 +1,276 @@
+// AddExpense.scss
+.addExpenseContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  z-index: 20;
+  
+  .expenseForm {
+    background: aliceblue;
+    border-radius: 12px;
+    padding: 1.8rem;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    margin: auto;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: aliceblue;
+      border-radius: 10px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: #1d9bf0;
+      border-radius: 10px;
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+      background: #0c7abf;
+    }
+    
+    .formHeader {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      
+      h2 {
+        font-family: 'Poppins';
+        color: #0d2c4a;
+        font-weight: 600;
+        margin: 0;
+        font-size: 20px;
+      }
+      
+      .closeBtn {
+        height: 30px;
+        width: 30px;
+        border-radius: 50px;
+        font-size: 18px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        color: aliceblue;
+        background-color: #0d2c4a;
+      }
+    }
+    
+    .formGroup {
+      margin-bottom: 1.2rem;
+      
+      .inputHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        
+        label {
+          font-weight: 600;
+          color: #233343;
+          margin: 0;
+          align-self: end;
+        }
+        
+        .addCustomBtn {
+          cursor: pointer;
+          font-size: 0.8rem;
+          font-weight: 500;
+          background-color: #1d9bf0;
+          color: aliceblue;
+          border: none;
+          outline: none;
+        }
+      }
+      
+      select {
+        width: 100%;
+        border: 2px solid #1d9bf0;
+        border-radius: 8px;
+        padding: 0.75rem;
+        font-size: .85rem;
+        transition: border-color 0.3s;
+        background-color: rgb(219, 233, 245);
+        color: #1a3d60;
+        outline: none;
+        font-family: 'Poppins';
+        margin-top: 5px;
+        font-weight: 500;
+
+        option{
+          font-family: 'Poppins';
+          font-weight: 500;
+          color: #254b72;
+        }
+        
+        &:focus {
+          outline: none;
+          box-shadow: 0 0 0 2px #1d9bf030;
+        }
+      }
+
+      input, textarea {
+        border: 2px solid #1d9bf0;
+        border-radius: 8px;
+        padding: 0.75rem;
+        font-size: .85rem;
+        transition: border-color 0.3s;
+        background-color: rgb(219, 233, 245);
+        outline: none;
+        color: #0d2c4a;
+        font-weight: 500;
+        font-family: 'Poppins';
+        margin-top: 5px;
+        
+        &:focus {
+          outline: none;
+          box-shadow: 0 0 0 2px #1d9bf030;
+        }
+
+        &::placeholder{
+          color: #6f97b3;
+          font-family: 'Poppins';
+          font-weight: 500;
+        }
+      }
+      
+      textarea {
+        min-height: 80px;
+        resize: vertical;
+      }
+      
+      .customInputContainer {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        
+        input {
+          margin-bottom: 0;
+          font-family: 'Poppins';
+          font-weight: 600;
+          color: #2a516c;
+
+          &::placeholder{
+            color: #6f97b3;
+            font-family: 'Poppins';
+            font-weight: 500;
+          }
+        }
+        
+        .customActions {
+          display: flex;
+          gap: 0.5rem;
+          
+          button {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            outline: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+          }
+          
+          .saveCustomBtn {
+            background: #2a4354;
+            color: white;
+            
+            &:hover {
+              background: #1e3341;
+            }
+          }
+          
+          .cancelCustomBtn {
+            background: #c0392b;
+            color: white;
+            
+            &:hover {
+              background: #a22a1d;
+            }
+          }
+        }
+      }
+    }
+    
+    .formRow {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .formGroup {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .formActions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      
+      button {
+        flex: 1;
+        padding: 0.9rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      
+      .cancelBtn {
+        background: #c0392b;
+        color: white;
+        
+        &:hover {
+          background: #a22a1d;
+        }
+      }
+      
+      .submitBtn {
+        background: #1d9bf0;
+        color: white;
+        
+        &:hover {
+          background: #0b79c2;
+        }
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 576px) {
+  .addExpenseContainer {
+    padding: 10px;
+    
+    .expenseForm {
+      padding: 1.5rem;
+      
+      .formRow {
+        flex-direction: column;
+        gap: 0;
+      }
+      
+      .formActions {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+  }
+}
