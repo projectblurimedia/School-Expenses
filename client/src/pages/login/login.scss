@@ -1,3 +1,125 @@
-.loginContainer{
-  background-color: red;
+.login{
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: aliceblue;
+    background: linear-gradient(to right, #001727, #1d9bf0);
+
+    .loginForm{
+        padding: 15px;
+        border: 2px solid rgba(240, 248, 255, .176);
+        border-radius: 4px;
+        background-color: transparent;
+        backdrop-filter: blur(10px);
+        width: 350px;
+        text-align: center;
+        box-shadow: 0 0 6px aliceblue,
+                    0 0 7px rgba(252, 252, 252, 0.948);
+
+        .loginTitle{
+            font-size: 26px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+        .formInputs{
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            margin-bottom: 12px;
+
+            .formInputContainer{
+                width: 100%;
+                height: 28px;
+                border-radius: 4px;
+                position: relative;
+                display: flex;
+                align-items: center;
+
+                .formInput{
+                    width: 100%;
+                    height: 100%;
+                    border: none;
+                    outline: none;
+                    padding: 10px 34px 10px 10px;
+                    border-radius: 4px;
+                    font-size: 17px;
+                    font-weight: 500;
+                    color: #001727;
+                    font-family: Poppins;
+
+                    &:focus ~ .formLabel{
+                        color: #1d9bf0;
+                        font-size: 12px;
+                        top: -4px;
+                        background-color: white;
+                        padding: 0px 6px;
+                        border-radius: 6px;
+                        font-weight: 600;
+                    }
+                    &:focus ~ .formIcon{
+                        color: #1d9bf0;
+                    }
+                    &:not(:placeholder-shown) ~ .formLabel{
+                        font-size: 12px;
+                        top: -4px;
+                        background-color: white;
+                        padding: 0px 6px;
+                        border-radius: 6px;
+                        font-weight: 600;
+                        color: #1d9bf0;
+                    }
+                    
+                }
+                .formLabel{
+                    position: absolute;
+                    left: 10px;
+                    color: rgba(128, 128, 128, .756);
+                    top: 50%;
+                    transform: translateY(-50%);
+                    transition: all .4s;
+                    pointer-events: none;
+                    font-weight: 600;
+                    font-size: 14px;
+                }
+                .formIcon{
+                    position: absolute;
+                    right: 10px;
+                    color: gray;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+                .passwordIcon{
+                    cursor: pointer;
+                }
+            }
+        }
+
+        .loginBtn{
+            margin: 20px 0 10px 0;
+            padding: 8px 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            border: none;
+            outline: none;
+            background-color: #1d9bf0;
+            color: aliceblue;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 0 7px #1d9bf0;
+            transition: .3s;
+            width: 65px;
+
+            &:active{
+                background-color: #01548b;
+            }
+            &:disabled{
+                cursor: not-allowed;
+                background-color: #92cef0d0;
+            }
+        }
+       
+
+    }
 }
