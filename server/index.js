@@ -2,14 +2,9 @@ const express = require('express')
 const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 const cors = require('cors')
-<<<<<<< HEAD
-const authRoutes = require('./routes/authRoute');
-
-=======
 const expenseRoute = require('./routes/expenseRoute')
 const categoryRoute = require('./routes/categoryRoute')
 const itemRoute = require('./routes/itemRoute')
->>>>>>> d27e8d8fe981a73d1879f56054864746ad2b1cfc
 
 const app = express()
 dotenv.config({ quiet: true })
@@ -29,19 +24,10 @@ app.use(cors({
     origin : 'http://localhost:5173'
 }))
 
-<<<<<<< HEAD
-// Routes
-app.use('/server/auth', authRoutes);
-
-// Error Handling
-=======
 app.use('/server/expenses', expenseRoute)
 app.use('/server/categories', categoryRoute)
 app.use('/server/items', itemRoute)
 
-
-
->>>>>>> d27e8d8fe981a73d1879f56054864746ad2b1cfc
 app.use((error, req, res, next) => {
     const errorStatus = error.status || 500
     const errorMessage = error.message || 'Something went wrong!..'
