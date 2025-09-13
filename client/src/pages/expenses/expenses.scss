@@ -21,7 +21,8 @@
 
 
     .left {
-        font-size: 16px;
+        font-size: 17px;
+        font-weight: 500;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -50,10 +51,11 @@
         max-width: 400px;
         padding: 5px 40px 5px 15px;
         border-radius: 20px;
+        background-color: aliceblue;
         border: 1px solid aliceblue;
         box-shadow: 0 0 8px aliceblue;
         outline: none;
-        font-size: 16px;
+        font-size: 15px;
         transition: 0.3s;
         font-family: 'Poppins';
 
@@ -329,9 +331,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 10px;
-    margin-top: 10px;
-    margin-left: 10px;
+    margin: 11px;
+   
     .viewDetails{
         display: flex;
         align-items: center;
@@ -340,7 +341,7 @@
         color: #fff;
         border: none;
         outline: none;
-        padding: 10px 18px;
+        padding: 10px 16px;
         border-radius: 8px;
         cursor: pointer;
         font-size: 14px;
@@ -368,13 +369,16 @@
     .totalAmount{
         display: flex;
         align-items: center;
-        font-size: 17px;
+        font-size: 15px;
+        padding: 8px 12px;
         color: #001727;
+        border-radius: 12px;
         .total{
-            font-weight: 500;
+            font-size: 16px;
         }
         .amount{
-            color: crimson;
+            color: #1d9bf0;
+            font-weight: 500;
         }
     }
 }

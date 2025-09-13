@@ -2,6 +2,8 @@ const express = require('express')
 const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 const cors = require('cors')
+const authRoutes = require('./routes/authRoute');
+
 
 const app = express()
 dotenv.config({ quiet: true })
@@ -22,6 +24,9 @@ app.use(cors({
     credentials: true,
     origin : 'http://localhost:5173'
 }))
+
+// Routes
+app.use('/server/auth', authRoutes);
 
 // Error Handling
 app.use((error, req, res, next) => {

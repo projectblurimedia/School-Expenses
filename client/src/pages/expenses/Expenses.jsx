@@ -105,7 +105,7 @@ const Expenses = () => {
             <FontAwesomeIcon icon={faEye} className="icon" />
         </button>
         <div className="totalAmount">
-          <div className="total">Total:</div>
+          <div className="total">Total Amount:</div>
           <div className="amount">12000 INR</div>
         </div>
       </div>
