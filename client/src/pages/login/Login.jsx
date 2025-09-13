@@ -4,9 +4,9 @@ import { faEyeSlash, faUser } from '@fortawesome/free-solid-svg-icons'
 
 const Login = () => {
   return (
-    <div className='login'>
+    <div className='loginContainer'>
       <form className="loginForm">
-        <div className="loginTitle">SignIn</div>
+        <div className="loginTitle">Login</div>
         <div className="formInputs">
           <div className="formInputContainer">
             <input type="text" className="formInput" placeholder='' required/>

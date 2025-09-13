@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faPlus } from '@fortawesome/free-solid-svg-icons'
 import './home.scss'
 import AddExpense from '../../components/addExpense/AddExpense'
+import { useState, useEffect } from 'react'
 
 function Home() {
   const todayDate = new Date().toLocaleDateString(undefined, {
@@ -9,6 +10,45 @@ function Home() {
     month: 'short',
     day: 'numeric'
   })
+
+  const [isAddExpenseVisible, setIsAddExpenseVisible] = useState(false)
+  
+  const onCloseAddExpense = () => {
+    setIsAddExpenseVisible(false)
+    if (window.history.state?.modalOpen) {
+      window.history.back()
+    }
+  }
+
+  const openAddExpense = () => {
+    setIsAddExpenseVisible(true)
+    window.history.pushState({ modalOpen: true }, '')
+  }
+
+  useEffect(() => {
+    const handleBackButton = (event) => {
+      if (isAddExpenseVisible) {
+        event.preventDefault()
+        onCloseAddExpense()
+      }
+    }
+
+    const handlePopState = (event) => {
+      if (event.state && event.state.modalOpen) {
+        setIsAddExpenseVisible(true)
+      } else {
+        setIsAddExpenseVisible(false)
+      }
+    }
+
+    window.addEventListener('popstate', handlePopState)
+    window.addEventListener('beforeunload', handleBackButton)
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState)
+      window.removeEventListener('beforeunload', handleBackButton)
+    }
+  }, [isAddExpenseVisible])
 
   return (
     <div className="homeContainer">
@@ -67,16 +107,13 @@ function Home() {
           <FontAwesomeIcon icon={faEye} />
           <span>View Reports</span>
         </div>
-        <div className="createButton">
+        <div className="createButton" onClick={openAddExpense}>
           <FontAwesomeIcon icon={faPlus} />
           <span>Add Expense</span>
         </div>
       </div>
 
-      {
-        true && 
-        <AddExpense />
-      }
+      {isAddExpenseVisible && <AddExpense onClose={onCloseAddExpense} />}
     </div>
   )
 }
