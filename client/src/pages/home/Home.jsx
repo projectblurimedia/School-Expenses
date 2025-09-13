@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faPlus } from '@fortawesome/free-solid-svg-icons'
-import './Home.scss'
+import './home.scss'
 import AddExpense from '../../components/addExpense/AddExpense'
 
 function Home() {
@@ -74,7 +74,7 @@ function Home() {
       </div>
 
       {
-        !true && 
+        true && 
         <AddExpense />
       }
     </div>
