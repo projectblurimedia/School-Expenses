@@ -5,6 +5,7 @@ const cors = require('cors')
 const expenseRoute = require('./routes/expenseRoute')
 const categoryRoute = require('./routes/categoryRoute')
 const itemRoute = require('./routes/itemRoute')
+const authRoute = require('./routes/authRoute')
 
 const app = express()
 dotenv.config({ quiet: true })
@@ -24,6 +25,7 @@ app.use(cors({
   origin : 'http://localhost:5173'
 }))
 
+app.use('/server/auth',authRoute)
 app.use('/server/expenses', expenseRoute)
 app.use('/server/categories', categoryRoute)
 app.use('/server/items', itemRoute)
