@@ -3,8 +3,11 @@ import { faEye, faPlus } from '@fortawesome/free-solid-svg-icons'
 import './home.scss'
 import AddExpense from '../../components/addExpense/AddExpense'
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 function Home() {
+  const navigate = useNavigate()
+
   const todayDate = new Date().toLocaleDateString(undefined, {
     year: 'numeric',
     month: 'short',
@@ -49,6 +52,10 @@ function Home() {
       window.removeEventListener('beforeunload', handleBackButton)
     }
   }, [isAddExpenseVisible])
+
+  const handleNavigateExpenses = () => {
+    navigate('/expenses')
+  }
 
   return (
     <div className="homeContainer">
@@ -103,7 +110,7 @@ function Home() {
       </div>
 
       <div className="viewAndCreateButtonsContainer">
-        <div className="viewButton">
+        <div className="viewButton" onClick={handleNavigateExpenses}>
           <FontAwesomeIcon icon={faEye} />
           <span>View Reports</span>
         </div>

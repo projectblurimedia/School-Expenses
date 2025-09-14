@@ -1,50 +1,134 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import "./App.css";
-import Login from './pages/login/Login';
-import Home from './pages/home/Home';
-import Expenses from './pages/expenses/Expenses';
-import axios from "axios";
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import Login from './pages/login/Login'
+import Home from './pages/home/Home'
+import Expenses from './pages/expenses/Expenses'
 
 function App() {
-  const axiosBaseUrl = 'http://localhost:8000/server';
-  axios.defaults.baseURL = axiosBaseUrl;
+  const [isAuth, setIsAuth] = useState(false)
+  const [loading, setLoading] = useState(true)
 
-  // Function to check if JWT token is valid
-  const isAuthenticated = () => {
-    const token = localStorage.getItem('token');
-    if (!token || token.trim() === '') return false;
-    
-    // Optional: Basic JWT expiration check (decode without library for simplicity)
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload.exp * 1000 > Date.now();  // exp is in seconds
-    } catch {
-      return false;  // Invalid token
+  const axiosBaseUrl = 'http://localhost:8000/server'
+  axios.defaults.baseURL = axiosBaseUrl
+
+  useEffect(() => {
+    const requestInterceptor = axios.interceptors.request.use(
+      (config) => {
+        const token = localStorage.getItem('token')
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`
+        }
+        return config
+      },
+      (error) => {
+        return Promise.reject(error)
+      }
+    )
+
+    const responseInterceptor = axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response?.status === 401) {
+          localStorage.removeItem('token')
+          setIsAuth(false)
+          window.location.href = '/login'
+        }
+        return Promise.reject(error)
+      }
+    )
+
+    return () => {
+      axios.interceptors.request.eject(requestInterceptor)
+      axios.interceptors.response.eject(responseInterceptor)
     }
-  };
+  }, [])
+
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = localStorage.getItem('token')
+      
+      if (!token || token.trim() === '') {
+        setIsAuth(false)
+        setLoading(false)
+        return
+      }
+      
+      try {
+        const parts = token.split('.')
+        
+        if (parts.length !== 3) {
+          localStorage.removeItem('token')
+          setIsAuth(false)
+          setLoading(false)
+          return
+        }
+        
+        const payload = JSON.parse(atob(parts[1]))
+        
+        const isValid = payload.exp * 1000 > Date.now() - 60000
+        
+        setIsAuth(isValid)
+        
+        if (!isValid) {
+          localStorage.removeItem('token')
+        }
+      } catch (error) {
+        console.error('Token validation error:', error)
+        localStorage.removeItem('token')
+        setIsAuth(false)
+      }
+      setLoading(false)
+    }
+
+    checkAuth()
+    
+    const handleStorageChange = (e) => {
+      if (e.key === 'token') {
+        checkAuth()
+      }
+    }
+    
+    window.addEventListener('storage', handleStorageChange)
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+    }
+  }, [])
+
+  if (loading) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh',
+        fontSize: '18px',
+        fontFamily: 'Poppins'
+      }}>
+        Loading...
+      </div>
+    )
+  }
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route
-          path="/login"
-          element={<Login />}
-        />
-        <Route
-          path="/home"
-          element={isAuthenticated() ? <Home /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/expenses"
-          element={isAuthenticated() ? <Expenses /> : <Navigate to="/login" />}
+        <Route 
+          path="/login" 
+          element={isAuth ? <Navigate to="/" replace /> : <Login setIsAuth={setIsAuth} />} 
         />
         <Route
           path="/"
-          element={isAuthenticated() ? <Navigate to="/home" /> : <Navigate to="/login" />}
+          element={isAuth ? <Home /> : <Navigate to="/login" replace />}
+        />
+        <Route
+          path="/expenses"
+          element={isAuth ? <Expenses /> : <Navigate to="/login" replace />}
         />
       </Routes>
     </BrowserRouter>
-  );
+  )
 }
 
-export default App;
+export default App
