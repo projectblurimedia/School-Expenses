@@ -2,10 +2,6 @@ const express = require('express')
 const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 const cors = require('cors')
-<<<<<<< HEAD
-=======
-const authRoute = require('./routes/authRoute')
->>>>>>> 7f8429b2758e127900fab2e4b40c2a1b093db97a
 const expenseRoute = require('./routes/expenseRoute')
 const categoryRoute = require('./routes/categoryRoute')
 const itemRoute = require('./routes/itemRoute')
@@ -28,10 +24,6 @@ app.use(cors({
   origin : 'http://localhost:5173'
 }))
 
-<<<<<<< HEAD
-=======
-app.use('/server/auth', authRoute)
->>>>>>> 7f8429b2758e127900fab2e4b40c2a1b093db97a
 app.use('/server/expenses', expenseRoute)
 app.use('/server/categories', categoryRoute)
 app.use('/server/items', itemRoute)
@@ -49,12 +41,6 @@ app.use((error, req, res, next) => {
 })
 
 app.listen(process.env.PORT || 8000, () => {
-<<<<<<< HEAD
     console.log(`Server is running on http://localhost:${process.env.PORT}`)
     databaseConnection()
 })
-=======
-  console.log(`Server is running on http://localhost:${process.env.PORT}`)
-  databaseConnection()
-})
->>>>>>> 7f8429b2758e127900fab2e4b40c2a1b093db97a
