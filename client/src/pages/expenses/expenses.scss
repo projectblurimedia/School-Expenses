@@ -12,7 +12,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 15px;
+  padding: 10px 20px;
   background: #001727;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   margin-bottom: 15px;
@@ -34,43 +34,12 @@
     }
   }
 
-  .tabContainer {
-    display: flex;
-    gap: 10px;
-
-    .tabButton {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      padding: 8px 16px;
-      border-radius: 8px;
-      border: none;
-      background: #3b82f6;
-      color: white;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 500;
-      transition: all 0.3s;
-
-      &.active {
-        background: #1d9bf0;
-        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
-      }
-
-      &:hover {
-        background: #2563eb;
-      }
-
-      .tabIcon {
-        font-size: 14px;
-      }
-    }
-  }
-
   .filters {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     align-items: center;
+    flex-grow: 1;
+    justify-content: center;
 
     .categoryFilter, .itemFilter {
       position: relative;
@@ -135,6 +104,39 @@
       }
     }
   }
+
+  .tabContainer {
+    display: flex;
+    gap: 10px;
+
+    .tabButton {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      background: #3b82f6;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s;
+
+      &.active {
+        background: #1d9bf0;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+      }
+
+      &:hover {
+        background: #2563eb;
+      }
+
+      .tabIcon {
+        font-size: 14px;
+      }
+    }
+  }
 }
 
 .tableWrapper {
@@ -142,8 +144,8 @@
   overflow-y: auto;
   border: 1px solid #e6ecf0;
   border-radius: 8px;
-  padding-right: 1px;
-  padding-bottom: 1px;
+  padding: 20px; /* Added padding to all sides of table */
+  background: #fff;
 
   &::-webkit-scrollbar {
     width: 4px;
