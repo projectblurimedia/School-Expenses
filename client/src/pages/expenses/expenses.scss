@@ -269,6 +269,107 @@
           }
         }
       }
+
+      .calendarContainer {
+        position: absolute;
+        top: 105%;
+        left: 0;
+        z-index: 20;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        padding: 10px;
+        font-family: 'Poppins', 'Inter', 'Segoe UI', sans-serif;
+
+        .react-datepicker {
+          border: none;
+          font-family: 'Poppins', 'Inter', 'Segoe UI', sans-serif;
+          background: #ffffff;
+          border-radius: 8px;
+
+          .react-datepicker__header {
+            background: #1d9bf0;
+            color: aliceblue;
+            border-radius: 8px 8px 0 0;
+            padding: 10px;
+            border: none;
+
+            .react-datepicker__current-month,
+            .react-datepicker__month-text,
+            .react-datepicker__year-text {
+              color: aliceblue;
+              font-weight: 600;
+              font-size: 14px;
+            }
+
+            .react-datepicker__day-name {
+              color: #d9e2ee;
+              font-weight: 500;
+              font-size: 12px;
+              margin: 0.166rem;
+              width: 2rem;
+              line-height: 2rem;
+            }
+          }
+
+          .react-datepicker__month-container,
+          .react-datepicker__year {
+            background: #ffffff;
+            border-radius: 0 0 8px 8px;
+          }
+
+          .react-datepicker__day,
+          .react-datepicker__month-text,
+          .react-datepicker__year-text {
+            color: #1e293b;
+            font-weight: 500;
+            font-size: 14px;
+            padding: 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            margin: 0.166rem;
+            width: 2rem;
+            line-height: 2rem;
+
+            &:hover {
+              background: #f1f5f9;
+            }
+          }
+
+          .react-datepicker__day--selected,
+          .react-datepicker__month-text--selected,
+          .react-datepicker__year-text--selected {
+            background: #1d9bf0;
+            color: aliceblue;
+            font-weight: 600;
+          }
+
+          .react-datepicker__day--outside-month {
+            color: #94a3b8;
+          }
+
+          .react-datepicker__day--disabled,
+          .react-datepicker__month-text--disabled,
+          .react-datepicker__year-text--disabled {
+            opacity: 0.5;
+            color: #ccc !important;
+            pointer-events: none;
+          }
+
+          .react-datepicker__navigation {
+            top: 10px;
+
+            .react-datepicker__navigation-icon::before {
+              border-color: #d9e2ee;
+            }
+
+            &:hover .react-datepicker__navigation-icon::before {
+              border-color: aliceblue;
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -287,6 +388,16 @@
   border-radius: 12px;
   background: #ffffff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+  .filterSummary {
+    text-align: center;
+    font-weight: 600;
+    padding: 10px;
+    background: #f1f5f9;
+    border-bottom: 1px solid #e2e8f0;
+    color: #0f172a;
+    font-size: 16px;
+  }
 
   .expensesTable {
     width: 100%;
@@ -322,8 +433,25 @@
           padding: 14px 16px;
           border-right: 1px solid #1d9cf02b;  
         }
+
+        td.noRecords {
+          text-align: center;
+          color: #64748b;
+          font-style: italic;
+          font-size: 16px;
+        }
       }
     }
+  }
+
+  .totalAmount {
+    text-align: right;
+    padding: 10px 16px;
+    font-weight: 600;
+    border-top: 1px solid #e2e8f0;
+    background: #f8fafc;
+    color: #0f172a;
+    font-size: 16px;
   }
 }
 

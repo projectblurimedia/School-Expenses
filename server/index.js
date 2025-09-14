@@ -25,7 +25,7 @@ app.use(cors({
   origin : 'http://localhost:5173'
 }))
 
-app.use('/server/auth',authRoute)
+app.use('/server/auth', authRoute)
 app.use('/server/expenses', expenseRoute)
 app.use('/server/categories', categoryRoute)
 app.use('/server/items', itemRoute)
