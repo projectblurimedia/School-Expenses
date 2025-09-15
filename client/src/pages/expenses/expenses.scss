@@ -2,6 +2,7 @@
   width: 100vw;
   height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   background: #f8fafc;
   display: flex;
   flex-direction: column;
@@ -208,6 +209,19 @@
         .filterIcon {
           color: aliceblue;
         }
+
+        &:not(.enabled) {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+
+        &.enabled {
+          box-shadow: 0 0 10px rgba(29, 155, 240, 0.5);
+        }
+
+        &.fetching {
+          animation: pulse 0.5s ease-in-out;
+        }
       }
     }
     
@@ -274,7 +288,8 @@
       .calendarContainer {
         position: absolute;
         top: 105%;
-        left: 0;
+        right: 0;
+        left: auto;
         z-index: 20;
         background: #ffffff;
         border: 1px solid #e2e8f0;
@@ -389,12 +404,31 @@
   margin-top: 10px;
   margin-bottom: 10px;
 
-  .filterSummary {
-    text-align: center;
-    font-weight: 600;
+  .filterSummaryContainer {
+    display: flex;
+    align-items: center;
     padding: 10px;
     background: #f1f5f9;
     border-bottom: 1px solid #e2e8f0;
+    color: #0f172a;
+    font-size: 16px;
+  }
+
+  .filterSummaryContainer.has-total {
+    justify-content: space-between;
+    padding: 15px 30px;
+  }
+
+  .filterSummaryContainer:not(.has-total) {
+    justify-content: center;
+  }
+
+  .filterSummary {
+    font-weight: 600;
+  }
+
+  .totalAmount {
+    font-weight: 600;
     color: #0f172a;
     font-size: 16px;
   }
@@ -446,16 +480,6 @@
       }
     }
   }
-
-  .totalAmount {
-    text-align: center;
-    padding: 10px 16px;
-    font-weight: 600;
-    border-top: 1px solid #e2e8f0;
-    background: #f8fafc;
-    color: #0f172a;
-    font-size: 16px;
-  }
 }
 
 .analyticsWrapper {
@@ -467,12 +491,30 @@
   margin-top: 10px;
   margin-bottom: 10px;
 
-  .filterSummary {
-    text-align: center;
-    font-weight: 600;
+  .filterSummaryContainer {
+    display: flex;
+    align-items: center;
     padding: 10px;
     background: #f1f5f9;
     border-bottom: 1px solid #e2e8f0;
+    color: #0f172a;
+    font-size: 16px;
+  }
+
+  .filterSummaryContainer.has-total {
+    justify-content: space-between;
+  }
+
+  .filterSummaryContainer:not(.has-total) {
+    justify-content: center;
+  }
+
+  .filterSummary {
+    font-weight: 600;
+  }
+
+  .totalAmount {
+    font-weight: 600;
     color: #0f172a;
     font-size: 16px;
   }
@@ -568,15 +610,17 @@
       }
     }
   }
+}
 
-  .totalAmount {
-    text-align: center;
-    padding: 10px 16px;
-    font-weight: 600;
-    border-top: 1px solid #e2e8f0;
-    background: #f8fafc;
-    color: #0f172a;
-    font-size: 16px;
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
   }
 }
 
@@ -649,6 +693,19 @@
     .expensesTable {
       min-width: 600px;
     }
+  }
+
+  .filterSummaryContainer {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .filterSummary {
+    text-align: center;
+  }
+
+  .totalAmount {
+    text-align: center;
   }
 }
 

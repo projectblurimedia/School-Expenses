@@ -30,6 +30,9 @@ const Expenses = () => {
   const [categories, setCategories] = useState([{ name: 'All Categories', _id: null }])
   const [items, setItems] = useState(['All Items'])
   const [records, setRecords] = useState([])
+  const [annualTotal, setAnnualTotal] = useState(0)
+  const [monthlyTotal, setMonthlyTotal] = useState(0)
+  const [isFetching, setIsFetching] = useState(false)
 
   const categoryDropdownRef = useRef(null)
   const itemDropdownRef = useRef(null)
@@ -38,7 +41,7 @@ const Expenses = () => {
 
   const dateRanges = ['Date', 'Month', 'Year', 'Custom Range']
 
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF6384', '#3fa5ea', '#fcd060', '#4BC0C0', '#9966FF', '#C9CBCF', '#5E4FA2', '#3E9651', '#800000', '#D9E3F0', '#F46D43', '#FDAE61', '#FEE08B', '#E6F598', '#ABDDA4', '#66BD63']
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF6384',  '#9966FF', '#07ec38', '#800000', '#3fa5ea', '#f9d16b', '#0b9797', '#D9E3F0', '#F46D43', '#E6F598', '#ABDDA4']
 
   const capitalize = (str) => {
     if (!str) return ''
@@ -83,6 +86,34 @@ const Expenses = () => {
   }, [])
 
   useEffect(() => {
+    const fetchTotals = async () => {
+      const now = new Date()
+      // Annual
+      const annualStart = new Date(now.getFullYear(), 0, 1).toISOString().split('T')[0]
+      const annualEnd = new Date(now.getFullYear(), 11, 31).toISOString().split('T')[0]
+      try {
+        const annualRes = await axios.get(`/expenses/filtered?category=All Categories&item=All Items&period=Year&startDate=${annualStart}&endDate=${annualEnd}`)
+        const annualSum = annualRes.data.reduce((acc, r) => acc + r.price, 0)
+        setAnnualTotal(annualSum)
+      } catch (err) {
+        console.error('Error fetching annual total:', err)
+      }
+
+      // Monthly
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0]
+      const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0]
+      try {
+        const monthRes = await axios.get(`/expenses/filtered?category=All Categories&item=All Items&period=Month&startDate=${monthStart}&endDate=${monthEnd}`)
+        const monthSum = monthRes.data.reduce((acc, r) => acc + r.price, 0)
+        setMonthlyTotal(monthSum)
+      } catch (err) {
+        console.error('Error fetching monthly total:', err)
+      }
+    }
+    fetchTotals()
+  }, [])
+
+  useEffect(() => {
     const handleClickOutside = (event) => {
       if (categoryDropdownRef.current && !categoryDropdownRef.current.contains(event.target)) {
         setShowCategoryDropdown(false)
@@ -100,6 +131,15 @@ const Expenses = () => {
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
+
+  const filtersChanged = () => {
+    return selectedCategory._id !== appliedCategory._id ||
+           selectedItem !== appliedItem ||
+           selectedDateRange !== appliedDateRange ||
+           selectedDate.getTime() !== appliedSelectedDate.getTime() ||
+           (startDate ? startDate.getTime() : null) !== (appliedStartDate ? appliedStartDate.getTime() : null) ||
+           (endDate ? endDate.getTime() : null) !== (appliedEndDate ? appliedEndDate.getTime() : null)
+  }
 
   const handleGoBackToHome = () => {
     navigate('/')
@@ -136,16 +176,16 @@ const Expenses = () => {
     if (selectedDateRange === 'Month') {
       const year = date.getFullYear()
       const month = date.getMonth()
-      const start = new Date(date)
-      const end = new Date(year, month + 1, 1)
+      const start = new Date(year, month, 1)
+      const end = new Date(year, month + 1, 0)
       setStartDate(start)
       setEndDate(end)
       setSelectedDate(date)
       setShowCalendar(false)
     } else if (selectedDateRange === 'Year') {
       const year = date.getFullYear()
-      const start = new Date(date)
-      const end = new Date(year, 11, 32)
+      const start = new Date(year, 0, 1)
+      const end = new Date(year, 11, 31)
       setStartDate(start)
       setEndDate(end)
       setSelectedDate(date)
@@ -170,6 +210,7 @@ const Expenses = () => {
   }
 
   const handleGetRecords = async () => {
+    setIsFetching(true)
     const periodData = {
       category: selectedCategory.name,
       item: selectedItem,
@@ -189,6 +230,8 @@ const Expenses = () => {
       setAppliedEndDate(endDate)
     } catch (err) {
       console.error('Error fetching records:', err)
+    } finally {
+      setIsFetching(false)
     }
   }
 
@@ -273,7 +316,7 @@ const Expenses = () => {
   }
 
   const formatDate = (date) => {
-    return date.toLocaleDateString('en-GB')
+    return new Date(date).toLocaleDateString('en-GB')
   }
 
   const getDisplayDate = () => {
@@ -338,13 +381,13 @@ const Expenses = () => {
         <div className="centerSection">
           <div className="amountDetails">
             <div className="amountItem">
-              <div className="amountLabel">Total Amount</div>
-              <div className="amountValue">12,000 INR</div>
+              <div className="amountLabel">Annual Amount</div>
+              <div className="amountValue">₹ {formatPrice(annualTotal)}</div>
             </div>
             <div className="divider"></div>
             <div className="amountItem">
               <div className="amountLabel">This Month</div>
-              <div className="amountValue">3,450 INR</div>
+              <div className="amountValue">₹ {formatPrice(monthlyTotal)}</div>
             </div>
           </div>
         </div>
@@ -458,7 +501,10 @@ const Expenses = () => {
             )}
           </div>
 
-          <div className="filterGroup getRecordsButton" onClick={handleGetRecords}>
+          <div 
+            className={`filterGroup getRecordsButton ${filtersChanged() ? 'enabled' : ''} ${isFetching ? 'fetching' : ''}`} 
+            onClick={filtersChanged() ? handleGetRecords : null}
+          >
             <div className="filterLabel">Get Records</div>
             <FontAwesomeIcon icon={faFileArrowDown} className="filterIcon" />
           </div>
@@ -468,7 +514,12 @@ const Expenses = () => {
       <div className="contentWrapper">
         {activeTab === 'table' ? (
           <div className="tableWrapper">
-            <div className="filterSummary">{filterSummary}</div>
+            <div className={`filterSummaryContainer ${records.length > 0 ? 'has-total' : ''}`}>
+              <div className="filterSummary">{filterSummary}</div>
+              {records.length > 0 && (
+                <div className="totalAmount">Total: {formatPrice(getTotalPrice())} INR</div>
+              )}
+            </div>
             <table className="expensesTable">
               {appliedCategory.name === 'All Categories' ? (
                 <>
@@ -530,6 +581,7 @@ const Expenses = () => {
                       <th>Quantity</th>
                       <th>Cost</th>
                       <th>Person</th>
+                      <th>Date</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -542,24 +594,27 @@ const Expenses = () => {
                           <td>{record.quantity}</td>
                           <td>{formatPrice(record.price)}/-</td>
                           <td>{capitalize(record.person)}</td>
+                          <td>{record.date ? formatDate(record.date) : ''}</td>
                         </tr>
                       ))
                     ) : (
                       <tr>
-                        <td colSpan="6" className="noRecords">No records found</td>
+                        <td colSpan="7" className="noRecords">No records found</td>
                       </tr>
                     )}
                   </tbody>
                 </>
               )}
             </table>
-            {records.length > 0 && (
-              <div className="totalAmount">Total: {formatPrice(getTotalPrice())} INR</div>
-            )}
           </div>
         ) : (
           <div className="analyticsWrapper">
-            <div className="filterSummary">{filterSummary}</div>
+            <div className={`filterSummaryContainer ${records.length > 0 ? 'has-total' : ''}`}>
+              <div className="filterSummary">{filterSummary}</div>
+              {records.length > 0 && (
+                <div className="totalAmount">Total: {formatPrice(total)} INR</div>
+              )}
+            </div>
             <div className="analyticsContainer">
               <div className="chartContainer">
                 <h3>Expense Trends</h3>
@@ -616,9 +671,6 @@ const Expenses = () => {
                 </div>
               </div>
             </div>
-            {records.length > 0 && (
-              <div className="totalAmount">Total: {formatPrice(total)} INR</div>
-            )}
           </div>
         )}
       </div>
