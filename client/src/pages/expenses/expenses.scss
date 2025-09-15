@@ -1,6 +1,7 @@
 .expensesContainer {
   width: 100vw;
-  height: 100vh;
+  height: 100%;
+  overflow-y: auto;
   background: #f8fafc;
   display: flex;
   flex-direction: column;
@@ -375,19 +376,18 @@
 }
 
 .contentWrapper {
-  flex: 1;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
 .tableWrapper {
-  flex: 1;
-  overflow-y: auto;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   background: #ffffff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  overflow: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
 
   .filterSummary {
     text-align: center;
@@ -400,9 +400,12 @@
   }
 
   .expensesTable {
-    width: 100%;
+    width: max-content;
+    margin: 20px auto;
     border-collapse: collapse;
     font-size: 14px;
+    border-radius: 12px;
+    overflow: hidden;
 
     thead {
       background-color: #1d9bf0;
@@ -455,95 +458,125 @@
   }
 }
 
-.analyticsContainer {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  height: 100%;
-  
-  .chartContainer {
-    flex: 2;
-    min-width: 300px;
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    
-    h3 {
-      margin-top: 0;
-      color: #0f172a;
-      margin-bottom: 20px;
-      font-size: 18px;
-    }
+.analyticsWrapper {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  overflow: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
 
-    .chartPlaceholder {
-      height: 300px;
-      background: #f8fafc;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #64748b;
-      border-radius: 8px;
-      font-weight: 500;
-    }
+  .filterSummary {
+    text-align: center;
+    font-weight: 600;
+    padding: 10px;
+    background: #f1f5f9;
+    border-bottom: 1px solid #e2e8f0;
+    color: #0f172a;
+    font-size: 16px;
   }
-  
-  .categoryBreakdown {
-    flex: 1;
-    min-width: 250px;
-    background: white;
-    border-radius: 12px;
+
+  .analyticsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
     padding: 20px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    
-    h3 {
-      margin-top: 0;
-      color: #0f172a;
-      margin-bottom: 20px;
-      font-size: 18px;
-    }
-    
-    .breakdownList {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+  
+    .chartContainer {
+      flex: 2;
+      min-width: 300px;
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
       
-      .breakdownItem {
+      h3 {
+        margin-top: 0;
+        color: #0f172a;
+        margin-bottom: 20px;
+        font-size: 18px;
+      }
+  
+      .chartPlaceholder {
+        height: 300px;
+        background: #f8fafc;
         display: flex;
         align-items: center;
-        padding: 12px;
+        justify-content: center;
+        color: #64748b;
         border-radius: 8px;
-        background: #f8fafc;
+        font-weight: 500;
+      }
+    }
+    
+    .categoryBreakdown {
+      flex: 1;
+      min-width: 250px;
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      
+      h3 {
+        margin-top: 0;
+        color: #0f172a;
+        margin-bottom: 20px;
+        font-size: 18px;
+      }
+      
+      .breakdownList {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
         
-        .categoryColor {
-          width: 16px;
-          height: 16px;
-          border-radius: 4px;
-          margin-right: 12px;
-        }
-        
-        .categoryName {
-          flex: 1;
-          font-weight: 500;
-          color: #0f172a;
-        }
-        
-        .categoryAmount {
-          font-weight: 600;
-          margin-right: 12px;
-          color: #0f172a;
-          font-size: 14px;
-        }
-        
-        .categoryPercentage {
-          font-weight: 600;
-          color: #1d4ed8;
-          min-width: 60px;
-          text-align: right;
-          font-size: 14px;
+        .breakdownItem {
+          display: flex;
+          align-items: center;
+          padding: 12px;
+          border-radius: 8px;
+          background: #f8fafc;
+          
+          .categoryColor {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            margin-right: 12px;
+          }
+          
+          .categoryName {
+            flex: 1;
+            font-weight: 500;
+            color: #0f172a;
+          }
+          
+          .categoryAmount {
+            font-weight: 600;
+            margin-right: 12px;
+            color: #0f172a;
+            font-size: 14px;
+          }
+          
+          .categoryPercentage {
+            font-weight: 600;
+            color: #1d4ed8;
+            min-width: 60px;
+            text-align: right;
+            font-size: 14px;
+          }
         }
       }
     }
+  }
+
+  .totalAmount {
+    text-align: right;
+    padding: 10px 16px;
+    font-weight: 600;
+    border-top: 1px solid #e2e8f0;
+    background: #f8fafc;
+    color: #0f172a;
+    font-size: 16px;
   }
 }
 

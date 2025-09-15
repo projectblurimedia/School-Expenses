@@ -1,11 +1,12 @@
 import './expenses.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faCalendar, faDownload, faChartPie, faChevronDown, faFileArrowDown, faTable } from '@fortawesome/free-solid-svg-icons'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import axios from 'axios'
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
 
 const Expenses = () => {
   const navigate = useNavigate()
@@ -30,13 +31,25 @@ const Expenses = () => {
   const [items, setItems] = useState(['All Items'])
   const [records, setRecords] = useState([])
 
+  const categoryDropdownRef = useRef(null)
+  const itemDropdownRef = useRef(null)
+  const dateDropdownRef = useRef(null)
+  const calendarRef = useRef(null)
+
   const dateRanges = ['Date', 'Month', 'Year', 'Custom Range']
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#C9CBCF', '#5E4FA2', '#3E9651', '#800000', '#D9E3F0', '#F46D43', '#FDAE61', '#FEE08B', '#E6F598', '#ABDDA4', '#66BD63']
+
+  const capitalize = (str) => {
+    if (!str) return ''
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+  }
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get('/categories')
-        setCategories([{ name: 'All Categories', _id: null }, ...response.data])
+        setCategories([{ name: 'All Categories', _id: null }, ...response.data.map(cat => ({...cat, name: capitalize(cat.name)}))])
       } catch (err) {
         console.error('Error fetching categories:', err)
       }
@@ -48,7 +61,7 @@ const Expenses = () => {
     const fetchItemsByCategory = async (categoryId) => {
       try {
         const response = await axios.get(`/items/${categoryId}`)
-        const fetchedItems = response.data.map(item => item.name)
+        const fetchedItems = response.data.map(item => capitalize(item.name))
         setItems(['All Items', ...fetchedItems])
       } catch (err) {
         console.error('Error fetching items:', err)
@@ -67,6 +80,25 @@ const Expenses = () => {
 
   useEffect(() => {
     handleGetRecords()
+  }, [])
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (categoryDropdownRef.current && !categoryDropdownRef.current.contains(event.target)) {
+        setShowCategoryDropdown(false)
+      }
+      if (itemDropdownRef.current && !itemDropdownRef.current.contains(event.target)) {
+        setShowItemDropdown(false)
+      }
+      if (dateDropdownRef.current && !dateDropdownRef.current.contains(event.target)) {
+        setShowDateDropdown(false)
+      }
+      if (calendarRef.current && !calendarRef.current.contains(event.target)) {
+        setShowCalendar(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
   const handleGoBackToHome = () => {
@@ -104,16 +136,16 @@ const Expenses = () => {
     if (selectedDateRange === 'Month') {
       const year = date.getFullYear()
       const month = date.getMonth()
-      const start = new Date(date)
-      const end = new Date(year, month + 1, 1)
+      const start = new Date(year, month, 1)
+      const end = new Date(year, month + 1, 0)
       setStartDate(start)
       setEndDate(end)
       setSelectedDate(date)
       setShowCalendar(false)
     } else if (selectedDateRange === 'Year') {
       const year = date.getFullYear()
-      const start = new Date(date)
-      const end = new Date(year, 11, 32)
+      const start = new Date(year, 0, 1)
+      const end = new Date(year, 11, 31)
       setStartDate(start)
       setEndDate(end)
       setSelectedDate(date)
@@ -161,42 +193,73 @@ const Expenses = () => {
 
   const getCategoryAggregatedData = () => {
     const categoryTotals = records.reduce((acc, record) => {
-      const category = record.category
+      let category = record.category
+      const lowerCategory = category.toLowerCase()
+      category = capitalize(category)
       const price = record.price
-      if (!acc[category]) {
-        acc[category] = 0
+      if (!acc[lowerCategory]) {
+        acc[lowerCategory] = 0
       }
-      acc[category] += price
+      acc[lowerCategory] += price
       return acc
     }, {})
     
-    return Object.entries(categoryTotals).map(([category, totalPrice], index) => ({
+    return Object.entries(categoryTotals).map(([lowerCategory, totalPrice], index) => ({
       id: index + 1,
-      category,
+      category: capitalize(lowerCategory),
       totalPrice
     }))
   }
 
   const getItemAggregatedData = () => {
     const itemTotals = records.reduce((acc, record) => {
-      const item = record.item
+      let item = record.item
+      const lowerItem = item.toLowerCase()
+      item = capitalize(item)
       const price = record.price
-      if (!acc[item]) {
-        acc[item] = 0
+      if (!acc[lowerItem]) {
+        acc[lowerItem] = 0
       }
-      acc[item] += price
+      acc[lowerItem] += price
       return acc
     }, {})
     
-    return Object.entries(itemTotals).map(([item, totalPrice], index) => ({
+    return Object.entries(itemTotals).map(([lowerItem, totalPrice], index) => ({
       id: index + 1,
-      item,
+      item: capitalize(lowerItem),
       totalPrice
     }))
   }
 
+  const getPieData = () => {
+    let data;
+    if (appliedCategory.name === 'All Categories') {
+      return getCategoryAggregatedData().map(d => ({ name: d.category, value: d.totalPrice }))
+    } else if (appliedItem === 'All Items') {
+      return getItemAggregatedData().map(d => ({ name: d.item, value: d.totalPrice }))
+    } else {
+      const personTotals = records.reduce((acc, record) => {
+        let person = record.person || 'Unknown'
+        const lowerPerson = person.toLowerCase()
+        const price = record.price
+        if (!acc[lowerPerson]) {
+          acc[lowerPerson] = { name: capitalize(lowerPerson), value: 0 }
+        }
+        acc[lowerPerson].value += price
+        return acc
+      }, {})
+      return Object.values(personTotals)
+    }
+    // Filter out 0 value entries
+    return data.filter(d => d.value > 0)
+  }
+
   const getTotalPrice = () => {
     return records.reduce((acc, record) => acc + record.price, 0)
+  }
+
+  const formatPrice = (price) => {
+    return price.toLocaleString('en-IN')
   }
 
   const getDatePickerView = () => {
@@ -244,9 +307,24 @@ const Expenses = () => {
     ? `${appliedCategory.name} > ${appliedItem} - ${getAppliedDisplayDate()}`
     : `${appliedCategory.name} - ${getAppliedDisplayDate()}`
 
+  const pieData = getPieData()
+  const total = getTotalPrice()
+
+  const RADIAN = Math.PI / 180;
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, name }) => {
+    const radius = outerRadius + 20;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+    if (percent < 0.03) return null;
+    return (
+      <text x={x} y={y} fill="#333" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={12}>
+        {`${name} ${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
+
   return (
     <div className='expensesContainer'>
-      {/* Top Header */}
       <div className="topHeader">
         <div className="leftSection">
           <FontAwesomeIcon 
@@ -256,7 +334,6 @@ const Expenses = () => {
           />
           <div className="pageTitle">Expenses</div>
         </div>
-        
         <div className="centerSection">
           <div className="amountDetails">
             <div className="amountItem">
@@ -270,7 +347,6 @@ const Expenses = () => {
             </div>
           </div>
         </div>
-        
         <div className="rightSection">
           <button className="exportBtn">
             <FontAwesomeIcon icon={faDownload} className="exportIcon" />
@@ -298,7 +374,7 @@ const Expenses = () => {
         </div>
         
         <div className="filtersContainer">          
-          <div className="customDropdown">
+          <div className="customDropdown" ref={categoryDropdownRef}>
             <div 
               className="dropdownHeader"
               onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
@@ -322,7 +398,7 @@ const Expenses = () => {
           </div>
           
           {selectedCategory._id && (
-            <div className="customDropdown">
+            <div className="customDropdown" ref={itemDropdownRef}>
               <div 
                 className="dropdownHeader"
                 onClick={() => setShowItemDropdown(!showItemDropdown)}
@@ -346,7 +422,7 @@ const Expenses = () => {
             </div>
           )}
           
-          <div className="customDropdown">
+          <div className="customDropdown" ref={dateDropdownRef}>
             <div 
               className="dropdownHeader"
               onClick={() => setShowDateDropdown(!showDateDropdown)}
@@ -369,7 +445,7 @@ const Expenses = () => {
               </div>
             )}
             {showCalendar && (
-              <div className="calendarContainer">
+              <div className="calendarContainer" ref={calendarRef}>
                 <DatePicker
                   selected={selectedDate}
                   onChange={handleDateSelect}
@@ -388,7 +464,6 @@ const Expenses = () => {
         </div>
       </div>
 
-      {/* Content Section */}
       <div className="contentWrapper">
         {activeTab === 'table' ? (
           <div className="tableWrapper">
@@ -409,7 +484,7 @@ const Expenses = () => {
                         <tr key={data.id}>
                           <td>{data.id}</td>
                           <td>{data.category}</td>
-                          <td>{data.totalPrice}/-</td>
+                          <td>{formatPrice(data.totalPrice)}/-</td>
                         </tr>
                       ))
                     ) : (
@@ -434,7 +509,7 @@ const Expenses = () => {
                         <tr key={data.id}>
                           <td>{data.id}</td>
                           <td>{data.item}</td>
-                          <td>{data.totalPrice}/-</td>
+                          <td>{formatPrice(data.totalPrice)}/-</td>
                         </tr>
                       ))
                     ) : (
@@ -461,11 +536,11 @@ const Expenses = () => {
                       records.map((record, index) => (
                         <tr key={record._id}>
                           <td>{index + 1}</td>
-                          <td><span className='category'>{record.category}</span></td>
-                          <td>{record.item}</td>
+                          <td><span className='category'>{capitalize(record.category)}</span></td>
+                          <td>{capitalize(record.item)}</td>
                           <td>{record.quantity}</td>
-                          <td>{record.price}/-</td>
-                          <td>{record.person}</td>
+                          <td>{formatPrice(record.price)}/-</td>
+                          <td>{capitalize(record.person)}</td>
                         </tr>
                       ))
                     ) : (
@@ -478,44 +553,61 @@ const Expenses = () => {
               )}
             </table>
             {records.length > 0 && (
-              <div className="totalAmount">Total: {getTotalPrice()} INR</div>
+              <div className="totalAmount">Total: {formatPrice(getTotalPrice())} INR</div>
             )}
           </div>
         ) : (
-          <div className="analyticsContainer">
-            <div className="chartContainer">
-              <h3>Expense Trends</h3>
-              <div className="chartPlaceholder">Chart visualization will be displayed here</div>
-            </div>
-            <div className="categoryBreakdown">
-              <h3>Category Breakdown</h3>
-              <div className="breakdownList">
-                <div className="breakdownItem">
-                  <div className="categoryColor" style={{background: '#ff6384'}}></div>
-                  <div className="categoryName">Food</div>
-                  <div className="categoryAmount">5000 INR</div>
-                  <div className="categoryPercentage">42%</div>
-                </div>
-                <div className="breakdownItem">
-                  <div className="categoryColor" style={{background: '#36a2eb'}}></div>
-                  <div className="categoryName">Stationary</div>
-                  <div className="categoryAmount">3000 INR</div>
-                  <div className="categoryPercentage">25%</div>
-                </div>
-                <div className="breakdownItem">
-                  <div className="categoryColor" style={{background: '#4bc0c0'}}></div>
-                  <div className="categoryName">Books</div>
-                  <div className="categoryAmount">2500 INR</div>
-                  <div className="categoryPercentage">21%</div>
-                </div>
-                <div className="breakdownItem">
-                  <div className="categoryColor" style={{background: '#ffcd56'}}></div>
-                  <div className="categoryName">Others</div>
-                  <div className="categoryAmount">1500 INR</div>
-                  <div className="categoryPercentage">12%</div>
+          <div className="analyticsWrapper">
+            <div className="filterSummary">{filterSummary}</div>
+            <div className="analyticsContainer">
+              <div className="chartContainer">
+                <h3>Expense Trends</h3>
+                {records.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={pieData}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={100}
+                        innerRadius={60}
+                        label={renderCustomizedLabel}
+                        labelLine={true}
+                      >
+                        {pieData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="chartPlaceholder">No data available</div>
+                )}
+              </div>
+              <div className="categoryBreakdown">
+                <h3>Category Breakdown</h3>
+                <div className="breakdownList">
+                  {records.length > 0 ? (
+                    pieData.map((entry, index) => (
+                      <div className="breakdownItem" key={index}>
+                        <div className="categoryColor" style={{background: COLORS[index % COLORS.length]}}></div>
+                        <div className="categoryName">{entry.name}</div>
+                        <div className="categoryAmount">{formatPrice(entry.value)} INR</div>
+                        <div className="categoryPercentage">{((entry.value / total) * 100).toFixed(0)}%</div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="noRecords">No records found</div>
+                  )}
                 </div>
               </div>
             </div>
+            {records.length > 0 && (
+              <div className="totalAmount">Total: {formatPrice(total)} INR</div>
+            )}
           </div>
         )}
       </div>
