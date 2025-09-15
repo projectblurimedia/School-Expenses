@@ -136,16 +136,16 @@ const Expenses = () => {
     if (selectedDateRange === 'Month') {
       const year = date.getFullYear()
       const month = date.getMonth()
-      const start = new Date(year, month, 1)
-      const end = new Date(year, month + 1, 0)
+      const start = new Date(date)
+      const end = new Date(year, month + 1, 1)
       setStartDate(start)
       setEndDate(end)
       setSelectedDate(date)
       setShowCalendar(false)
     } else if (selectedDateRange === 'Year') {
       const year = date.getFullYear()
-      const start = new Date(year, 0, 1)
-      const end = new Date(year, 11, 31)
+      const start = new Date(date)
+      const end = new Date(year, 11, 32)
       setStartDate(start)
       setEndDate(end)
       setSelectedDate(date)
@@ -177,6 +177,7 @@ const Expenses = () => {
       startDate: startDate ? startDate.toISOString().split('T')[0] : null,
       endDate: endDate ? endDate.toISOString().split('T')[0] : null
     }
+    console.log(periodData)
     try {
       const res = await axios.get(`/expenses/filtered?category=${periodData.category}&item=${periodData.item}&period=${periodData.period}&startDate=${periodData.startDate}&endDate=${periodData.endDate}`)
       setRecords(res.data)
