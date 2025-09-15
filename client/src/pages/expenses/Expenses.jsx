@@ -181,97 +181,92 @@ const Expenses = () => {
     setShowItemDropdown(false)
   }
 
-  /*
   const handleDateRangeSelect = (range) => {
-    setSelectedDateRange(range)
-    setShowDateDropdown(false)
-    setShowCalendar(true)
-    if (range === 'Date') {
-      const today = new Date()
-      setSelectedDate(today)
-      setStartDate(today)
-      setEndDate(today)
-    } else if (range === 'Month' || range === 'Year') {
-      // Will be set in handleDateSelect
-    } else {
-      setStartDate(null)
-      setEndDate(null)
-    }
-  }
-  */
-  const handleDateRangeSelect = (range) => {
-    setShowDateDropdown(true) // Modified: Keep date dropdown open after selection
-    const today = new Date()
+    setShowDateDropdown(true); // Keep date dropdown open after selection
     if (range !== selectedDateRange) {
-      setSelectedDateRange(range)
+      setSelectedDateRange(range);
       if (range === 'Custom Range') {
-        setStartDate(null)
-        setEndDate(null)
-        setSelectedDate(null)
-        setShowCalendar(true)
+        setStartDate(null);
+        setEndDate(null);
+        setSelectedDate(null);
+        setShowCalendar(true);
       } else {
         if (range === 'Date') {
-          setSelectedDate(today)
-          setStartDate(today)
-          setEndDate(today)
-          setShowCalendar(false)
+          const today = new Date();
+          setSelectedDate(today);
+          setStartDate(today);
+          setEndDate(today);
+          setShowCalendar(false);
         } else if (range === 'Month') {
-          const year = today.getFullYear()
-          const month = today.getMonth()
-          setStartDate(new Date(year, month, 1))
-          setEndDate(new Date(year, month + 1, 0))
-          setSelectedDate(today)
-          setShowCalendar(false)
+          // Use the currently selected date or default to today if none
+          const selected = selectedDate || new Date();
+          const year = selected.getFullYear();
+          const month = selected.getMonth();
+          // Set startDate to the 1st of the selected month at midnight UTC
+          const start = new Date(Date.UTC(year, month, 1, 0, 0, 0, 0));
+          // Set endDate to the last day of the selected month at 23:59:59 UTC
+          const end = new Date(Date.UTC(year, month + 1, 0, 23, 59, 59, 999));
+          setStartDate(start);
+          setEndDate(end);
+          setSelectedDate(selected);
+          setShowCalendar(true); // Show calendar to allow month selection
         } else if (range === 'Year') {
-          const year = today.getFullYear()
-          setStartDate(new Date(year, 0, 1))
-          setEndDate(new Date(year, 11, 31))
-          setSelectedDate(today)
-          setShowCalendar(true) // Modified: Open calendar for Year selection
+          const today = new Date();
+          const year = today.getFullYear();
+          const start = new Date(Date.UTC(year, 0, 1, 0, 0, 0, 0));
+          const end = new Date(Date.UTC(year, 11, 31, 23, 59, 59, 999));
+          setStartDate(start);
+          setEndDate(end);
+          setSelectedDate(today);
+          setShowCalendar(true); // Open calendar for Year
         }
-        setShowCalendar(range === 'Year') // Modified: Ensure calendar opens for Year
+        setShowCalendar(range === 'Year' || range === 'Month'); // Show calendar for Month and Year
       }
     } else {
-      setShowCalendar(true)
+      setShowCalendar(true);
     }
-  }
+  };
 
   const handleDateSelect = (date) => {
     if (selectedDateRange === 'Month') {
-      const year = date.getFullYear()
-      const month = date.getMonth()
-      const start = new Date(year, month, 1)
-      const end = new Date(year, month + 1, 0)
-      setStartDate(start)
-      setEndDate(end)
-      setSelectedDate(date)
-      setShowCalendar(false)
+      const year = date.getFullYear();
+      const month = date.getMonth();
+      // Set startDate to the 1st of the selected month at midnight UTC
+      const start = new Date(Date.UTC(year, month, 1, 0, 0, 0, 0));
+      // Set endDate to the last day of the selected month at 23:59:59 UTC
+      const end = new Date(Date.UTC(year, month + 1, 0, 23, 59, 59, 999));
+      setStartDate(start);
+      setEndDate(end);
+      setSelectedDate(date);
+      setShowCalendar(false);
     } else if (selectedDateRange === 'Year') {
-      const year = date.getFullYear()
-      const start = new Date(year, 0, 1)
-      const end = new Date(year, 11, 31)
-      setStartDate(start)
-      setEndDate(end)
-      setSelectedDate(date)
-      setShowCalendar(false)
+      const year = date.getFullYear();
+      const start = new Date(Date.UTC(year, 0, 1, 0, 0, 0, 0));
+      const end = new Date(Date.UTC(year, 11, 31, 23, 59, 59, 999));
+      setStartDate(start);
+      setEndDate(end);
+      setSelectedDate(date);
+      setShowCalendar(false);
     } else if (selectedDateRange === 'Custom Range') {
+      // Ensure the date is set to midnight UTC to avoid time zone shifts
+      const utcDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0));
       if (!startDate) {
-        setStartDate(date)
-      } else if (!endDate && date >= startDate) {
-        setEndDate(date)
-        setShowCalendar(false)
+        setStartDate(utcDate);
+      } else if (!endDate && utcDate >= startDate) {
+        setEndDate(utcDate);
+        setShowCalendar(false);
       } else {
-        setStartDate(date)
-        setEndDate(null)
+        setStartDate(utcDate);
+        setEndDate(null);
       }
-      setSelectedDate(date)
+      setSelectedDate(date); // Keep selectedDate as the original date for display
     } else {
-      setSelectedDate(date)
-      setStartDate(date)
-      setEndDate(date)
-      setShowCalendar(false)
+      setSelectedDate(date);
+      setStartDate(date);
+      setEndDate(date);
+      setShowCalendar(false);
     }
-  }
+  };
 
   const handleGetRecords = async () => {
     setIsFetching(true)
@@ -431,6 +426,14 @@ const Expenses = () => {
     )
   }
 
+  const canGetRecords = () => {
+  if (selectedDateRange === 'Custom Range') {
+    return startDate !== null && endDate !== null; // only enable if both picked
+  }
+  return true; // other ranges work as usual
+};
+
+
   return (
     <div className='expensesContainer'>
       <div className="topHeader">
@@ -565,13 +568,23 @@ const Expenses = () => {
             )}
           </div>
 
-          <div 
+          {/* <div 
             className={`filterGroup getRecordsButton ${filtersChanged() ? 'enabled' : ''} ${isFetching ? 'fetching' : ''}`} 
             onClick={filtersChanged() ? handleGetRecords : null}
           >
             <div className="filterLabel">Get Records</div>
             <FontAwesomeIcon icon={faFileArrowDown} className="filterIcon" />
+          </div> */}
+          <div 
+            className={`filterGroup getRecordsButton ${
+              filtersChanged() && canGetRecords() ? 'enabled' : ''
+            } ${isFetching ? 'fetching' : ''}`} 
+            onClick={filtersChanged() && canGetRecords() ? handleGetRecords : null}
+          >
+            <div className="filterLabel">Get Records</div>
+            <FontAwesomeIcon icon={faFileArrowDown} className="filterIcon" />
           </div>
+
         </div>
       </div>
 

@@ -4,6 +4,7 @@ import './home.scss'
 import AddExpense from '../../components/addExpense/AddExpense'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
 function Home() {
   const navigate = useNavigate()
@@ -15,6 +16,7 @@ function Home() {
   })
 
   const [isAddExpenseVisible, setIsAddExpenseVisible] = useState(false)
+  const [records, setRecords] = useState([]) 
   
   const onCloseAddExpense = () => {
     setIsAddExpenseVisible(false)
@@ -27,6 +29,23 @@ function Home() {
     setIsAddExpenseVisible(true)
     window.history.pushState({ modalOpen: true }, '')
   }
+
+  //neww
+  useEffect(() => {
+    const fetchTodaysExpenses = async () => {
+      const today = new Date();
+      const todayISO = today.toISOString().split('T')[0]; // yyyy-mm-dd
+      try {
+        const res = await axios.get(
+          `/expenses/filtered?category=All Categories&item=All Items&period=Date&startDate=${todayISO}&endDate=${todayISO}`
+        );
+        setRecords(res.data);
+      } catch (err) {
+        console.error("Error fetching today's expenses:", err);
+      }
+    };
+    fetchTodaysExpenses();
+  }, []);
 
   useEffect(() => {
     const handleBackButton = (event) => {
@@ -90,7 +109,7 @@ function Home() {
               </tr>
             </thead>
             <tbody>
-              {[...Array(15)].map((_, index) => (
+              {/* {[...Array(15)].map((_, index) => (
                 <tr key={index}>
                   <td>{index + 1}</td>
                   <td>
@@ -103,7 +122,25 @@ function Home() {
                   <td>{index % 3 === 0 ? '115/-' : index % 3 === 1 ? '80/-' : '450/-'}</td>
                   <td>{index % 2 === 0 ? 'John Doe' : 'Jane Smith'}</td>
                 </tr>
-              ))}
+              ))} */}
+               {records.length > 0 ? (
+                records.map((expense, index) => (
+                  <tr key={expense._id || index}>
+                    <td>{index + 1}</td>
+                    <td>{expense.category}</td>
+                    <td>{expense.item}</td>
+                    <td>{expense.quantity}</td>
+                    <td>{expense.price}</td>
+                    <td>{expense.person}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" style={{ textAlign: 'center' }}>
+                    No expenses recorded today.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -120,7 +157,16 @@ function Home() {
         </div>
       </div>
 
-      {isAddExpenseVisible && <AddExpense onClose={onCloseAddExpense} />}
+      {/* {isAddExpenseVisible && <AddExpense onClose={onCloseAddExpense} />} */}
+      {isAddExpenseVisible && (
+      <AddExpense
+        onClose={onCloseAddExpense}
+          onExpenseAdded={(newExpense) =>
+            setRecords((prev) => [newExpense, ...prev]) // instantly update table
+          }
+      />
+    )}
+
     </div>
   )
 }

@@ -7,7 +7,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
 
-const AddExpense = ({ onClose }) => {
+const AddExpense = ({ onClose, onExpenseAdded }) => {
   const today = new Date()
   const [formData, setFormData] = useState({
     category: '',
@@ -220,6 +220,10 @@ const AddExpense = ({ onClose }) => {
     try {
       const res = await axios.post('/expenses', expense)
       console.log('Expense added:', res.data)
+
+      if (onExpenseAdded) {
+        onExpenseAdded(res.data)
+      }
       
       alert('Expense added successfully!')
       setFormData({
