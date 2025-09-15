@@ -92,28 +92,41 @@
   }
   
   .rightSection {
-    .exportBtn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: #10b981;
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: all 0.2s;
-      
-      &:hover {
-        background: #059669;
-        transform: translateY(-1px);
+    .exportDropdown {
+      position: relative;
+      display: inline-block;
+
+      .exportBtn{
+        background-color: rgb(3, 161, 3);
+        color: aliceblue;
       }
-      
-      .exportIcon {
-        font-size: 14px;
+      .exportMenu {
+        position: absolute;
+        right: 0;
+        top: 100%;
+        background:white;
+        color: #001727;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        box-shadow: 0px 2px 6px rgba(0,0,0,0.15);
+        z-index: 1000;
+        margin-top: 6px;
+
+        .exportItem {
+          padding: 8px 12px;
+          cursor: pointer;
+          font-size: 14px;
+          font-weight: 500;
+          transition: all 0.2s;
+
+          &:hover {
+            background: #1d9bf0;
+            color: aliceblue;
+          }
+        }
       }
     }
+
   }
 }
 

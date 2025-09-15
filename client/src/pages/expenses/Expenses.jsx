@@ -7,6 +7,9 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import axios from 'axios'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
+//xl sheet 
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 const Expenses = () => {
   const navigate = useNavigate()
@@ -33,11 +36,15 @@ const Expenses = () => {
   const [annualTotal, setAnnualTotal] = useState(0)
   const [monthlyTotal, setMonthlyTotal] = useState(0)
   const [isFetching, setIsFetching] = useState(false)
+  const [showExportDropdown, setShowExportDropdown] = useState(false);
+
 
   const categoryDropdownRef = useRef(null)
   const itemDropdownRef = useRef(null)
   const dateDropdownRef = useRef(null)
   const calendarRef = useRef(null)
+  const exportDropdownRef = useRef(null)
+
 
   const dateRanges = ['Date', 'Month', 'Year', 'Custom Range']
 
@@ -152,6 +159,9 @@ const Expenses = () => {
       }
       if (calendarRef.current && !calendarRef.current.contains(event.target)) {
         setShowCalendar(false)
+      }
+      if (exportDropdownRef.current && !exportDropdownRef.current.contains(event.target)) {
+        setShowExportDropdown(false)
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
@@ -427,11 +437,69 @@ const Expenses = () => {
   }
 
   const canGetRecords = () => {
-  if (selectedDateRange === 'Custom Range') {
-    return startDate !== null && endDate !== null; // only enable if both picked
-  }
-  return true; // other ranges work as usual
-};
+    if (selectedDateRange === 'Custom Range') {
+      return startDate !== null && endDate !== null; // only enable if both picked
+    }
+    return true; // other ranges work as usual
+  };
+
+  const handleExport = (format = "csv") => {
+    if (!records || records.length === 0) {
+      alert("No records to export!");
+      return;
+    }
+
+    // build filename based on appliedDateRange
+    let fileLabel = "";
+    if (appliedDateRange === "Date") {
+      fileLabel = appliedSelectedDate.toLocaleDateString("en-GB");
+    } else if (appliedDateRange === "Month") {
+      fileLabel = appliedSelectedDate.toLocaleString("default", {
+        month: "long",
+        year: "numeric",
+      });
+    } else if (appliedDateRange === "Year") {
+      fileLabel = appliedSelectedDate.getFullYear().toString();
+    } else if (appliedStartDate && appliedEndDate) {
+      fileLabel = `${appliedStartDate.toLocaleDateString("en-GB")} - ${appliedEndDate.toLocaleDateString("en-GB")}`;
+    } else {
+      fileLabel = "data";
+    }
+
+    const fileName = `Expenses_${fileLabel}.${format}`;
+
+    // map records into flat JSON
+    const exportData = records.map((r, index) => ({
+      SNo: index + 1,
+      Category: r.category,
+      Item: r.item,
+      Quantity: r.quantity,
+      Price: r.price,
+      Person: r.person,
+      Date: r.date ? new Date(r.date).toLocaleDateString("en-GB") : "",
+    }));
+
+    if (format === "csv") {
+      // Convert to CSV
+      const headers = Object.keys(exportData[0]).join(",");
+      const rows = exportData.map((row) =>
+        Object.values(row)
+          .map((val) => `"${val}"`)
+          .join(",")
+      );
+      const csvContent = [headers, ...rows].join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      saveAs(blob, fileName);
+    } else {
+      // Excel export
+      const ws = XLSX.utils.json_to_sheet(exportData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Expenses");
+      XLSX.writeFile(wb, fileName);
+    }
+
+    alert(`Downloading ${fileLabel} data as ${format.toUpperCase()}`);
+  };
 
 
   return (
@@ -459,10 +527,28 @@ const Expenses = () => {
           </div>
         </div>
         <div className="rightSection">
-          <button className="exportBtn">
-            <FontAwesomeIcon icon={faDownload} className="exportIcon" />
-            Export
-          </button>
+          <div className="exportDropdown" ref={exportDropdownRef}>
+            <button
+              className="exportBtn"
+              onClick={() => setShowExportDropdown(!showExportDropdown)}
+            >
+              <FontAwesomeIcon icon={faDownload} className="exportIcon" />
+              Export
+            </button>
+            {showExportDropdown && (
+              <div className="exportMenu">
+                <div className="exportItem" onClick={() => { handleExport("csv"); setShowExportDropdown(false); }}>
+                CSV File
+            </div>
+            <div className="exportItem" onClick={() => { handleExport("xlsx"); setShowExportDropdown(false); }}>
+              Excel Sheet
+          </div>
+    </div>
+  )}
+</div>
+
+
+
         </div>
       </div>
 
