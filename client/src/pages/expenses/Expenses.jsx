@@ -38,7 +38,7 @@ const Expenses = () => {
 
   const dateRanges = ['Date', 'Month', 'Year', 'Custom Range']
 
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#C9CBCF', '#5E4FA2', '#3E9651', '#800000', '#D9E3F0', '#F46D43', '#FDAE61', '#FEE08B', '#E6F598', '#ABDDA4', '#66BD63']
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF6384', '#3fa5ea', '#fcd060', '#4BC0C0', '#9966FF', '#C9CBCF', '#5E4FA2', '#3E9651', '#800000', '#D9E3F0', '#F46D43', '#FDAE61', '#FEE08B', '#E6F598', '#ABDDA4', '#66BD63']
 
   const capitalize = (str) => {
     if (!str) return ''
@@ -233,7 +233,7 @@ const Expenses = () => {
   }
 
   const getPieData = () => {
-    let data;
+    let data
     if (appliedCategory.name === 'All Categories') {
       return getCategoryAggregatedData().map(d => ({ name: d.category, value: d.totalPrice }))
     } else if (appliedItem === 'All Items') {
@@ -311,18 +311,18 @@ const Expenses = () => {
   const pieData = getPieData()
   const total = getTotalPrice()
 
-  const RADIAN = Math.PI / 180;
+  const RADIAN = Math.PI / 180
   const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, name }) => {
-    const radius = outerRadius + 20;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-    if (percent < 0.03) return null;
+    const radius = outerRadius + 20
+    const x = cx + radius * Math.cos(-midAngle * RADIAN)
+    const y = cy + radius * Math.sin(-midAngle * RADIAN)
+    if (percent < 0.03) return null
     return (
-      <text x={x} y={y} fill="#333" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={12}>
+      <text x={x} y={y} fill="#333" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize={12} fontWeight={500}>
         {`${name} ${(percent * 100).toFixed(0)}%`}
       </text>
-    );
-  };
+    )
+  }
 
   return (
     <div className='expensesContainer'>
@@ -573,7 +573,7 @@ const Expenses = () => {
                         cx="50%"
                         cy="50%"
                         outerRadius={100}
-                        innerRadius={60}
+                        innerRadius={1}
                         label={renderCustomizedLabel}
                         labelLine={true}
                       >
@@ -581,7 +581,17 @@ const Expenses = () => {
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
-                      <Tooltip />
+                      <Tooltip 
+                        formatter={(value) => `${formatPrice(value)} INR`} 
+                        contentStyle={{ 
+                          backgroundColor: '#ffffff', 
+                          border: '2px solid #dde9f5ff', 
+                          borderRadius: '8px',
+                          fontFamily: "'Poppins', 'Inter', 'Segoe UI', sans-serif",
+                        }}
+                        labelStyle={{ color: '#0f172a', fontWeight: 600 }}
+                        itemStyle={{ color: '#1d9bf0', fontWeight: 500 }}
+                      />
                     </PieChart>
                   </ResponsiveContainer>
                 ) : (
