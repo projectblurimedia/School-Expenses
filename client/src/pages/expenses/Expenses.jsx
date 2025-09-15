@@ -60,6 +60,7 @@ const Expenses = () => {
     fetchCategories()
   }, [])
 
+  /*
   useEffect(() => {
     const fetchItemsByCategory = async (categoryId) => {
       try {
@@ -74,6 +75,31 @@ const Expenses = () => {
     if (selectedCategory._id) {
       fetchItemsByCategory(selectedCategory._id)
       setShowItemDropdown(true)
+    } else {
+      setShowItemDropdown(false)
+      setSelectedItem('All Items')
+      setItems(['All Items'])
+    }
+  }, [selectedCategory._id])
+  */
+
+  useEffect(() => {
+  const fetchItemsByCategory = async (categoryId) => {
+    try {
+        const response = await axios.get(`/items/${categoryId}`)
+        const fetchedItems = response.data.map(item => capitalize(item.name))
+        setItems(['All Items', ...fetchedItems])
+        setSelectedItem('All Items')
+        setShowItemDropdown(true)
+      } catch (err) {
+        console.error('Error fetching items:', err)
+        setItems(['All Items'])
+        setSelectedItem('All Items')
+        setShowItemDropdown(true)
+      }
+    }
+    if (selectedCategory._id) {
+      fetchItemsByCategory(selectedCategory._id)
     } else {
       setShowItemDropdown(false)
       setSelectedItem('All Items')
@@ -155,6 +181,7 @@ const Expenses = () => {
     setShowItemDropdown(false)
   }
 
+  /*
   const handleDateRangeSelect = (range) => {
     setSelectedDateRange(range)
     setShowDateDropdown(false)
@@ -169,6 +196,43 @@ const Expenses = () => {
     } else {
       setStartDate(null)
       setEndDate(null)
+    }
+  }
+  */
+  const handleDateRangeSelect = (range) => {
+    setShowDateDropdown(true) // Modified: Keep date dropdown open after selection
+    const today = new Date()
+    if (range !== selectedDateRange) {
+      setSelectedDateRange(range)
+      if (range === 'Custom Range') {
+        setStartDate(null)
+        setEndDate(null)
+        setSelectedDate(null)
+        setShowCalendar(true)
+      } else {
+        if (range === 'Date') {
+          setSelectedDate(today)
+          setStartDate(today)
+          setEndDate(today)
+          setShowCalendar(false)
+        } else if (range === 'Month') {
+          const year = today.getFullYear()
+          const month = today.getMonth()
+          setStartDate(new Date(year, month, 1))
+          setEndDate(new Date(year, month + 1, 0))
+          setSelectedDate(today)
+          setShowCalendar(false)
+        } else if (range === 'Year') {
+          const year = today.getFullYear()
+          setStartDate(new Date(year, 0, 1))
+          setEndDate(new Date(year, 11, 31))
+          setSelectedDate(today)
+          setShowCalendar(true) // Modified: Open calendar for Year selection
+        }
+        setShowCalendar(range === 'Year') // Modified: Ensure calendar opens for Year
+      }
+    } else {
+      setShowCalendar(true)
     }
   }
 
