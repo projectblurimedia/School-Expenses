@@ -264,7 +264,7 @@
         top: 105%;
         left: 0;
         width: 100%;
-        background: #ffffff;
+        background: aliceblue;
         border: 1px solid #e2e8f0;
         border-radius: 8px;
         margin-top: 4px;
@@ -278,9 +278,11 @@
           font-size: 14px;
           font-weight: 500;
           transition: all 0.2s;
+          border-radius: 4px;
           
           &:hover {
-            background: #f1f5f9;
+            background: #1d9bf0;
+            color: aliceblue;
           }
         }
       }
@@ -349,7 +351,7 @@
             line-height: 2rem;
 
             &:hover {
-              background: #f1f5f9;
+              background: #1d9bf0;
             }
           }
 
