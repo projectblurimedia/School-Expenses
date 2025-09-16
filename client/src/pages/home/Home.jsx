@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faDownLeftAndUpRightToCenter, faEye, faPlus } from '@fortawesome/free-solid-svg-icons'
 import './home.scss'
 import AddExpense from '../../components/addExpense/AddExpense'
 import { useState, useEffect } from 'react'
@@ -17,6 +17,8 @@ function Home() {
 
   const [isAddExpenseVisible, setIsAddExpenseVisible] = useState(false)
   const [records, setRecords] = useState([]) 
+  //new
+  const [todayTotal, setTodayTotal] = useState(0);
   
   const onCloseAddExpense = () => {
     setIsAddExpenseVisible(false)
@@ -30,7 +32,7 @@ function Home() {
     window.history.pushState({ modalOpen: true }, '')
   }
 
-  //neww
+  /*neww
   useEffect(() => {
     const fetchTodaysExpenses = async () => {
       const today = new Date();
@@ -46,6 +48,39 @@ function Home() {
     };
     fetchTodaysExpenses();
   }, []);
+  */
+
+  useEffect(() => {
+  const fetchTodaysExpenses = async () => {
+      const today = new Date();
+      const todayISO = today.toISOString().split('T')[0]; // yyyy-mm-dd
+      try {
+        const res = await axios.get(
+          `/expenses/filtered?category=All Categories&item=All Items&period=Date&startDate=${todayISO}&endDate=${todayISO}`
+        );
+        setRecords(res.data);
+
+        // calculate total here
+        const total = res.data.reduce((sum, exp) => sum + exp.price, 0);
+        setTodayTotal(total);
+      } catch (err) {
+        console.error("Error fetching today's expenses:", err);
+      }
+    };
+    fetchTodaysExpenses();
+  }, []);
+
+  //new
+  useEffect(() => {
+    if (records.length > 0) {
+      const total = records.reduce(
+        (sum, exp) => sum + exp.price, 0);
+      setTodayTotal(total);
+    } else {
+      setTodayTotal(0);
+    }
+  }, [records]);
+
 
   useEffect(() => {
     const handleBackButton = (event) => {
@@ -92,7 +127,13 @@ function Home() {
 
       <div className="todayExpensesContainer">
         <div className="todayHeading">
-          <div className="title">Today's Expenses</div>
+          <div className="left">
+            <div className="title">Today's Expenses</div>
+            <div className='total'>
+              <FontAwesomeIcon icon={faDownLeftAndUpRightToCenter} className='icon'/>
+              <div className='amount'>₹{todayTotal} INR</div>
+            </div>
+          </div>
           <div className="date">{todayDate}</div>
         </div>
 

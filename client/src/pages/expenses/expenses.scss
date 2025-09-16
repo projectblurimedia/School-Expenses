@@ -97,8 +97,14 @@
       display: inline-block;
 
       .exportBtn{
-        background-color: rgb(3, 161, 3);
+        background-color: #03a103;
         color: aliceblue;
+        border: none;
+        outline: none;
+        transition: all 0.2s;
+        &:hover{
+          background-color: #029602;
+        }
       }
       .exportMenu {
         position: absolute;

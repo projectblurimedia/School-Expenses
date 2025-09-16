@@ -69,12 +69,33 @@ body, html {
       margin-bottom: 10px;
       padding-bottom: 2px;
       border-bottom: 1px solid #e6ecf0;
-
-      .title {
-        font-size: 1.2rem;
-        font-weight: 500;
-        color: #001727;
-        font-family: 'Poppins';
+      .left{
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 10px;
+        .title {
+          font-size: 1.2rem;
+          font-weight: 500;
+          color: #001727;
+          font-family: 'Poppins';
+        }
+        .total{
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          .icon{
+            height: 15px;
+          }
+          .amount{
+            font-weight: 500;
+            font-family: 'Poppins';
+            font-size: 16px;
+            color: crimson;
+            
+          }
+        }
       }
 
       .date {
