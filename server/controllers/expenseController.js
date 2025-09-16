@@ -206,6 +206,112 @@ const getFilteredExpenses = async (req, res) => {
   }
 }
 
+//new
+const getMonthlyExpensesByYear = async (req, res) => {
+  try {
+    const { year } = req.query;
+    if (!year) return res.status(400).json({ message: "Year is required" });
+
+    const selectedYear = parseInt(year);
+    const now = new Date();
+    const isCurrentYear = now.getFullYear() === selectedYear;
+    const lastMonth = isCurrentYear ? now.getMonth() + 1 : 12;
+
+    let monthlyData = [];
+
+    for (let month = 1; month <= lastMonth; month++) {
+      // Start date in UTC (midnight)
+      const startDate = new Date(Date.UTC(selectedYear, month - 1, 1, 0, 0, 0, 0));
+
+      // End date in UTC (last millisecond of month)
+      const endDate = new Date(Date.UTC(selectedYear, month, 0, 23, 59, 59, 999));
+
+      const result = await Expense.aggregate([
+        {
+          $match: {
+            date: { $gte: startDate, $lte: endDate },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: "$price" },
+          },
+        },
+      ]);
+
+      monthlyData.push({
+        month,
+        startDate,
+        endDate,
+        total: result.length > 0 ? result[0].total : 0,
+      });
+    }
+
+    res.json(monthlyData);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//new
+const getYearlyExpensesInRange = async (req, res) => {
+  try {
+    let { startYear, endYear } = req.query;
+
+    const currentYear = new Date().getFullYear();
+
+    // If no range provided, default to last 3 years
+    if (!startYear || !endYear) {
+      startYear = currentYear - 2; // last 3 years
+      endYear = currentYear;
+    }
+
+    startYear = parseInt(startYear);
+    endYear = parseInt(endYear);
+
+    if (startYear > endYear) {
+      return res.status(400).json({ message: "startYear cannot be greater than endYear" });
+    }
+
+    let yearlyData = [];
+
+    for (let year = endYear; year >= startYear; year--) {
+      const startDate = new Date(Date.UTC(year, 0, 1, 0, 0, 0, 0));
+      const endDate = new Date(Date.UTC(year, 11, 31, 23, 59, 59, 999));
+
+      const result = await Expense.aggregate([
+        {
+          $match: {
+            date: { $gte: startDate, $lte: endDate },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: "$price" }, // price only
+          },
+        },
+      ]);
+
+      yearlyData.push({
+        year,
+        startDate,
+        endDate,
+        total: result.length > 0 ? result[0].total : 0,
+      });
+    }
+
+    res.json(yearlyData);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+
+
+
 module.exports = {
   createExpense,
   getAllExpenses,
@@ -217,4 +323,6 @@ module.exports = {
   updateExpense,
   deleteExpense,
   getFilteredExpenses,
+  getMonthlyExpensesByYear,
+  getYearlyExpensesInRange,
 }
