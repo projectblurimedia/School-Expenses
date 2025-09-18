@@ -1,0 +1,368 @@
+.controlsSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 10px;
+  background: #001727;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px #0000000d;
+  
+  .tabsContainer {
+    display: flex;
+    gap: 4px;
+    background: #f1f5f9;
+    padding: 4px;
+    border-radius: 10px;
+    
+    .tabButton {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: #64748b;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+      
+      &.active {
+        background: #1d9bf0;
+        color: aliceblue;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        
+        .tabIcon {
+          color: aliceblue;
+        }
+      }
+      
+      &:hover:not(.active) {
+        background: #e2e8f0;
+      }
+      
+      .tabIcon {
+        font-size: 14px;
+      }
+    }
+  }
+  
+  .filtersContainer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    
+    .filterGroup {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      
+      .filterLabel {
+        font-size: 14px;
+        font-weight: 500;
+        color: #475569;
+      }
+      
+      .filterIcon {
+        color: #64748b;
+        font-size: 14px;
+      }
+
+      &.getRecordsButton {
+        background-color: #1d9bf0;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        gap: 3px;
+
+        .filterLabel {
+          color: aliceblue;
+        }
+        
+        .filterIcon {
+          color: aliceblue;
+        }
+
+        &:not(.enabled) {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+
+        &.enabled {
+          box-shadow: 0 0 10px rgba(29, 155, 240, 0.5);
+        }
+
+        &.fetching {
+          animation: pulse 0.5s ease-in-out;
+        }
+      }
+    }
+    
+    .customDropdown {
+      position: relative;
+      
+      .dropdownHeader {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.2s;
+        min-width: 140px;
+        
+        &.highlighted {
+          background: #1d9bf0;
+          color: aliceblue;
+          border-color: #1d9bf0;
+          
+          .dropdownIcon {
+            color: aliceblue;
+          }
+        }
+        
+        &:hover {
+          border-color: #cbd5e1;
+        }
+        
+        .calendarIcon {
+          color: #64748b;
+          font-size: 14px;
+        }
+        
+        .dropdownIcon {
+          margin-left: auto;
+          font-size: 12px;
+          color: #94a3b8;
+          transition: transform 0.2s;
+        }
+      }
+      
+      .dropdownMenu {
+        position: absolute;
+        top: 105%;
+        left: 0;
+        width: 100%;
+        background: #ffffff;
+        max-height: 200px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        margin-top: 4px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.09);
+        z-index: 20;
+        overflow-y: auto;
+
+        &::-webkit-scrollbar {
+          width: 4px;
+          height: 4px;
+        }
+        
+        &::-webkit-scrollbar-track {
+          background: aliceblue;
+          border-radius: 10px;
+        }
+        
+        &::-webkit-scrollbar-thumb {
+          background: #1d9bf0;
+          border-radius: 10px;
+        }
+        
+        &::-webkit-scrollbar-thumb:hover {
+          background: #0c7abf;
+        }
+        
+        .dropdownItem {
+          padding: 10px 12px;
+          cursor: pointer;
+          font-size: 14px;
+          font-weight: 500;
+          transition: all 0.2s;
+          border-radius: 4px;
+          
+          &.highlighted {
+            background: #1d9bf0;
+            color: aliceblue;
+          }
+          
+          &:hover {
+            background: #1d9bf0;
+            color: aliceblue;
+          }
+        }
+      }
+
+      .calendarContainer {
+        position: absolute;
+        top: 105%;
+        right: 0;
+        left: auto;
+        z-index: 20;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        padding: 10px;
+        font-family: 'Poppins', 'Inter', 'Segoe UI', sans-serif;
+
+        .react-datepicker {
+          border: none;
+          font-family: 'Poppins', 'Inter', 'Segoe UI', sans-serif;
+          background: #ffffff;
+          border-radius: 8px;
+
+          .react-datepicker__header {
+            background: #1d9bf0;
+            color: aliceblue;
+            border-radius: 8px 8px 0 0;
+            padding: 10px;
+            border: none;
+
+            .react-datepicker__current-month,
+            .react-datepicker__month-text,
+            .react-datepicker__year-text {
+              color: aliceblue;
+              font-weight: 600;
+              font-size: 14px;
+            }
+
+            .react-datepicker__day-name {
+              color: #d9e2ee;
+              font-weight: 500;
+              font-size: 12px;
+              margin: 0.166rem;
+              width: 2rem;
+              line-height: 2rem;
+            }
+          }
+
+          .react-datepicker__month-container,
+          .react-datepicker__year {
+            background: #ffffff;
+            border-radius: 0 0 8px 8px;
+          }
+
+          .react-datepicker__day,
+          .react-datepicker__month-text,
+          .react-datepicker__year-text {
+            color: #1e293b;
+            font-weight: 500;
+            font-size: 14px;
+            padding: 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            margin: 0.166rem;
+            width: 2rem;
+            line-height: 2rem;
+
+            &:hover {
+              background: #1d9bf0;
+            }
+          }
+
+          .react-datepicker__day--selected,
+          .react-datepicker__month-text--selected,
+          .react-datepicker__year-text--selected {
+            background: #1d9bf0;
+            color: aliceblue;
+            font-weight: 600;
+          }
+
+          .react-datepicker__day--in-range {
+            background: #e6f3ff;
+            color: #1e293b;
+          }
+
+          .react-datepicker__day--in-selecting-range {
+            background: #e6f3ff;
+            color: #1e293b;
+          }
+
+          .react-datepicker__day--outside-month {
+            color: #94a3b8;
+          }
+
+          .react-datepicker__day--disabled,
+          .react-datepicker__month-text--disabled,
+          .react-datepicker__year-text--disabled {
+            opacity: 0.5;
+            color: #ccc !important;
+            pointer-events: none;
+          }
+
+          .react-datepicker__navigation {
+            top: 10px;
+
+            .react-datepicker__navigation-icon::before {
+              border-color: #d9e2ee;
+            }
+
+            &:hover .react-datepicker__navigation-icon::before {
+              border-color: aliceblue;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 1024px) {
+  .controlsSection {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    
+    .tabsContainer {
+      justify-content: center;
+    }
+    
+    .filtersContainer {
+      justify-content: center;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .controlsSection {
+    .filtersContainer {
+      flex-direction: column;
+      align-items: stretch;
+      
+      .customDropdown {
+        width: 100%;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .controlsSection {
+    .tabsContainer {
+      flex-direction: column;
+    }
+  }
+}

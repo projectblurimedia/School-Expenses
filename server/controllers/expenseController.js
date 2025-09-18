@@ -206,7 +206,6 @@ const getFilteredExpenses = async (req, res) => {
   }
 }
 
-//new
 const getMonthlyExpensesByYear = async (req, res) => {
   try {
     const { year } = req.query;
@@ -307,10 +306,6 @@ const getYearlyExpensesInRange = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-
-
-
 
 module.exports = {
   createExpense,
