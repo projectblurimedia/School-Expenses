@@ -4,6 +4,7 @@ body, html {
   height: 100%;
   overflow: hidden; 
   font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
+  user-select: none;
 }
 
 .homeContainer {
@@ -66,34 +67,37 @@ body, html {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
       padding-bottom: 2px;
       border-bottom: 1px solid #e6ecf0;
-      .left{
+      
+      .left {
         display: flex;
         justify-content: flex-start;
         align-items: center;
         gap: 10px;
+        
         .title {
           font-size: 1.2rem;
           font-weight: 500;
           color: #001727;
           font-family: 'Poppins';
         }
-        .total{
+        
+        .total {
           display: flex;
           align-items: center;
           justify-content: center;
           gap: 10px;
-          .icon{
+          
+          .icon {
             height: 15px;
           }
-          .amount{
+          
+          .amount {
             font-weight: 500;
             font-family: 'Poppins';
             font-size: 16px;
             color: crimson;
-            
           }
         }
       }
@@ -111,45 +115,31 @@ body, html {
 
     .tableWrapper {
       flex: 1;
-      overflow-y: auto;
+      overflow: hidden;
       border: 1px solid #e6ecf0;
       border-radius: 8px;
-      padding-right: 1px;
-      padding-bottom: 1px;
-      padding-top: 0px;
-      
-      &::-webkit-scrollbar {
-        width: 4px;
-        height: 4px;
-      }
-      
-      &::-webkit-scrollbar-track {
-        background: aliceblue;
-        border-radius: 10px;
-      }
-      
-      &::-webkit-scrollbar-thumb {
-        background: #1d9bf0;
-        border-radius: 10px;
-      }
-      
-      &::-webkit-scrollbar-thumb:hover {
-        background: #0c7abf;
-      }
+      display: flex;
+      flex-direction: column;
 
       .expensesTable {
         width: 100%;
         border-collapse: collapse;
         font-size: 0.95rem;
         color: #2a2c2d;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
 
         thead {
           background-color: #1d9bf0;
           color: white;
-          position: sticky;
-          top: 0;
-          z-index: 10;
-
+          
+          tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+          }
+          
           th {
             padding: 12px 15px;
             text-align: left;
@@ -159,7 +149,33 @@ body, html {
         }
 
         tbody {
+          display: block;
+          overflow-y: auto;
+          flex: 1;
+
+          &::-webkit-scrollbar {
+            width: 2px;
+            height: 0px;
+          }
+          
+          &::-webkit-scrollbar-track {
+            background: aliceblue;
+            border-radius: 10px;
+          }
+          
+          &::-webkit-scrollbar-thumb {
+            background: #1d9bf0;
+            border-radius: 10px;
+          }
+          
+          &::-webkit-scrollbar-thumb:hover {
+            background: #0c7abf;
+          }
+          
           tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
             border-bottom: 1px solid #e6ecf0;
 
             &:hover {
@@ -210,21 +226,70 @@ body, html {
 @media (max-width: 768px) {
   .homeContainer {
     .todayExpensesContainer {
-      margin: 20px 20px 40px 20px;
-      padding: 15px;
+      margin: 10px 10px 30px 10px;
+      padding: 10px;
       
       .todayHeading {
-        flex-direction: row;
-        align-items: flex-start;
+        flex-direction: column;
+        align-items: center;
         gap: 10px;
+        padding-bottom: 5px;
+        
+        .left {
+          align-items: center;
+          gap: 5px;
+        }
       }
       
       .tableWrapper {
-        .expensesTable {
-          font-size: 0.85rem;
+        overflow-x: auto;
+        border: none;
+
+        &::-webkit-scrollbar {
+            width: 2px;
+            height: 2px;
+          }
           
-          th, td {
-            padding: 8px 10px;
+          &::-webkit-scrollbar-track {
+            background: aliceblue;
+            border-radius: 10px;
+          }
+          
+          &::-webkit-scrollbar-thumb {
+            background: #1d9bf0;
+            border-radius: 10px;
+          }
+          
+          &::-webkit-scrollbar-thumb:hover {
+            background: #0c7abf;
+          }
+        
+        .expensesTable {
+          min-width: 600px; // Ensures table doesn't collapse on mobile
+          
+          thead {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            
+            tr {
+              display: table;
+              width: 100%;
+            }
+            
+            th {
+              padding: 10px 8px;
+              font-size: 0.8rem;
+            }
+          }
+          
+          tbody {
+            tr {
+              td {
+                padding: 10px 8px;
+                font-size: 0.8rem;
+              }
+            }
           }
         }
       }
@@ -234,10 +299,91 @@ body, html {
       flex-direction: row;
       gap: 10px;
       align-items: center;
+      padding: 0 10px;
       
       .createButton, .viewButton {
-        width: 40%;
+        width: 48%;
         justify-content: center;
+        padding: 10px 15px;
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .homeContainer {
+    .headerImageContainer {
+      height: 150px;
+      
+      .imageOverlay {
+        padding: 15px;
+        
+        h1 {
+          font-size: 1.4rem;
+        }
+        
+        p {
+          font-size: 0.9rem;
+        }
+      }
+    }
+    
+    .todayExpensesContainer {
+      margin: 8px 8px 25px 8px;
+      padding: 8px;
+      
+      .todayHeading {
+        .left {
+          .title {
+            font-size: 1.1rem;
+          }
+          
+          .total {
+            .amount {
+              font-size: 14px;
+            }
+          }
+        }
+        
+        .date {
+          font-size: 0.75rem;
+          padding: 6px 12px;
+        }
+      }
+      
+      .tableWrapper {
+        .expensesTable {
+          min-width: 550px;
+          
+          thead {
+            th {
+              padding: 8px 6px;
+              font-size: 0.75rem;
+            }
+          }
+          
+          tbody {
+            tr {
+              td {
+                padding: 8px 6px;
+                font-size: 0.75rem;
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    .viewAndCreateButtonsContainer {
+      .createButton, .viewButton {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+        
+        svg {
+          width: 14px;
+          height: 14px;
+        }
       }
     }
   }
