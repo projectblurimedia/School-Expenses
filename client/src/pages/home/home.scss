@@ -2,9 +2,48 @@ body, html {
   margin: 0;
   padding: 0;
   height: 100%;
-  overflow: hidden; 
-  font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+  font-family: 'Poppins', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
   user-select: none;
+}
+
+.expensesContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  background-color: aliceblue;
+}
+
+.contentContainer {
+  flex: 1;
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.contentWrapper {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+.spinnerIcon {
+  font-size: 24px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .homeContainer {
@@ -14,7 +53,8 @@ body, html {
   height: 100vh;
   width: 100vw;
   background-color: aliceblue;
-  .logoutButton{
+
+  .logoutButton {
     display: flex;
     position: absolute;
     z-index: 200;
@@ -23,8 +63,8 @@ body, html {
     align-items: center;
     gap: 10px;
     padding: 6px 15px;
-    border-radius: 50px;
-    background-color: #1d9bf0;
+    border-radius: 8px;
+    background-color: #55271f;
     font-size: 14px;
     color: aliceblue;
     font-weight: 500;
@@ -33,7 +73,7 @@ body, html {
     transition: all 0.3s ease;
 
     &:hover {
-      background-color: #0c7abf;
+      background-color: #6e2418;
       transform: translateY(-2px);
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
     }
@@ -65,13 +105,13 @@ body, html {
         margin: 0;
         font-size: 1.8rem;
         font-weight: 600;
-        font-family: 'Poppins';
+        font-family: 'Poppins', sans-serif;
       }
 
       p {
         margin: 5px 0 0;
         font-size: 1rem;
-        font-family: 'Poppins';
+        font-family: 'Poppins', sans-serif;
       }
     }
   }
@@ -93,33 +133,33 @@ body, html {
       align-items: center;
       padding-bottom: 2px;
       border-bottom: 1px solid #e6ecf0;
-      
+
       .left {
         display: flex;
         justify-content: flex-start;
         align-items: center;
         gap: 10px;
-        
+
         .title {
           font-size: 1.2rem;
           font-weight: 500;
           color: #001727;
-          font-family: 'Poppins';
+          font-family: 'Poppins', sans-serif;
         }
-        
+
         .total {
           display: flex;
           align-items: center;
           justify-content: center;
           gap: 10px;
-          
+
           .icon {
             height: 15px;
           }
-          
+
           .amount {
             font-weight: 500;
-            font-family: 'Poppins';
+            font-family: 'Poppins', sans-serif;
             font-size: 16px;
             color: crimson;
           }
@@ -127,13 +167,13 @@ body, html {
       }
 
       .date {
-        font-size: .85rem;
+        font-size: 0.85rem;
         color: #203551;
         font-weight: 500;
         background: #e8f5fe;
         padding: 8px 16px;
         border-radius: 20px;
-        font-family: 'Poppins';
+        font-family: 'Poppins', sans-serif;
       }
     }
 
@@ -158,13 +198,13 @@ body, html {
         thead {
           background-color: #1d9bf0;
           color: white;
-          
+
           tr {
             display: table;
             width: 100%;
             table-layout: fixed;
           }
-          
+
           th {
             padding: 12px 15px;
             text-align: left;
@@ -180,23 +220,23 @@ body, html {
 
           &::-webkit-scrollbar {
             width: 4px;
-            height: 0px;
+            height: 0;
           }
-          
+
           &::-webkit-scrollbar-track {
             background: aliceblue;
             border-radius: 10px;
           }
-          
+
           &::-webkit-scrollbar-thumb {
             background: #1d9bf0;
             border-radius: 10px;
           }
-          
+
           &::-webkit-scrollbar-thumb:hover {
             background: #0c7abf;
           }
-          
+
           tr {
             display: table;
             width: 100%;
@@ -216,7 +256,6 @@ body, html {
         }
       }
     }
-    
   }
 
   .viewAndCreateButtonsContainer {
@@ -227,7 +266,8 @@ body, html {
     flex-direction: row;
     justify-content: space-between;
 
-    .createButton, .viewButton {
+    .createButton,
+    .viewButton {
       display: flex;
       align-items: center;
       gap: 10px;
@@ -254,61 +294,61 @@ body, html {
     .todayExpensesContainer {
       margin: 10px 10px 30px 10px;
       padding: 10px;
-      
+
       .todayHeading {
         flex-direction: column;
         align-items: center;
         gap: 10px;
         padding-bottom: 5px;
-        
+
         .left {
           align-items: center;
           gap: 5px;
         }
       }
-      
+
       .tableWrapper {
         overflow-x: auto;
         border: none;
 
         &::-webkit-scrollbar {
-            width: 2px;
-            height: 2px;
-          }
-          
-          &::-webkit-scrollbar-track {
-            background: aliceblue;
-            border-radius: 10px;
-          }
-          
-          &::-webkit-scrollbar-thumb {
-            background: #1d9bf0;
-            border-radius: 10px;
-          }
-          
-          &::-webkit-scrollbar-thumb:hover {
-            background: #0c7abf;
-          }
-        
+          width: 2px;
+          height: 2px;
+        }
+
+        &::-webkit-scrollbar-track {
+          background: aliceblue;
+          border-radius: 10px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background: #1d9bf0;
+          border-radius: 10px;
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+          background: #0c7abf;
+        }
+
         .expensesTable {
-          min-width: 600px; // Ensures table doesn't collapse on mobile
-          
+          min-width: 600px;
+
           thead {
             position: sticky;
             top: 0;
             z-index: 10;
-            
+
             tr {
               display: table;
               width: 100%;
             }
-            
+
             th {
               padding: 10px 8px;
               font-size: 0.8rem;
             }
           }
-          
+
           tbody {
             tr {
               td {
@@ -319,16 +359,16 @@ body, html {
           }
         }
       }
-    
     }
-    
+
     .viewAndCreateButtonsContainer {
       flex-direction: row;
       gap: 10px;
       align-items: center;
       padding: 0 10px;
-      
-      .createButton, .viewButton {
+
+      .createButton,
+      .viewButton {
         width: 48%;
         justify-content: center;
         padding: 10px 15px;
@@ -342,54 +382,54 @@ body, html {
   .homeContainer {
     .headerImageContainer {
       height: 150px;
-      
+
       .imageOverlay {
         padding: 15px;
-        
+
         h1 {
           font-size: 1.4rem;
         }
-        
+
         p {
           font-size: 0.9rem;
         }
       }
     }
-    
+
     .todayExpensesContainer {
       margin: 8px 8px 25px 8px;
       padding: 8px;
-      
+
       .todayHeading {
         .left {
           .title {
             font-size: 1.1rem;
           }
-          
+
           .total {
             .amount {
               font-size: 14px;
             }
           }
         }
-        
+
         .date {
           font-size: 0.75rem;
           padding: 6px 12px;
         }
       }
-      
+
       .tableWrapper {
         .expensesTable {
           min-width: 550px;
-          
+
           thead {
             th {
               padding: 8px 6px;
               font-size: 0.75rem;
             }
           }
-          
+
           tbody {
             tr {
               td {
@@ -401,12 +441,13 @@ body, html {
         }
       }
     }
-    
+
     .viewAndCreateButtonsContainer {
-      .createButton, .viewButton {
+      .createButton,
+      .viewButton {
         padding: 8px 12px;
         font-size: 0.8rem;
-        
+
         svg {
           width: 14px;
           height: 14px;
@@ -424,63 +465,136 @@ body, html {
   display: none !important;
 }
 
-
-//responsive
-/* put this at the end of home.scss (inside or replacing your current mobile query) */
 @media (max-width: 768px) {
-  .desktopOnly { display: none !important; }
-  .mobileOnly { display: block !important; }
+  .desktopOnly {
+    display: none !important;
+  }
+  .mobileOnly {
+    display: block !important;
+  }
 
   .mobileOnly {
     .cardsScrollWrapper {
-      /* Use available viewport height minus header/controls.
-         Tweak the 260px number if your header/buttons are taller/shorter. */
       max-height: calc(100vh - 280px);
       overflow-y: auto;
-      -webkit-overflow-scrolling: touch; /* smooth momentum scrolling on iOS */
+      -webkit-overflow-scrolling: touch;
       box-sizing: border-box;
-      padding: 12px 10px 96px; /* IMPORTANT: big bottom padding so last card can fully scroll into view */
+      padding: 12px 10px 96px;
       border: 1px solid #e6ecf0;
       border-radius: 8px;
 
-      /* scrollbar style (same as your table) */
-      &::-webkit-scrollbar { width: 4px; }
-      &::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
-      &::-webkit-scrollbar-thumb { background: #1d9bf0; border-radius: 4px; }
+      &::-webkit-scrollbar {
+        width: 4px;
+      }
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+      }
+      &::-webkit-scrollbar-thumb {
+        background: #1d9bf0;
+        border-radius: 4px;
+      }
 
-      /* Optional: help browsers respect padding when snapping/focusing */
       scroll-padding-bottom: 110px;
 
       .cardsWrapper {
         display: flex;
         flex-direction: column;
       }
+      // Replace the old card style with awesome glass style!
+      .expenseCard-glass {
+        background: linear-gradient(135deg, rgba(37, 116, 252, 0.198) 0%, rgba(132, 191, 255, 0.054) 100%);
+        border-radius: 4px;
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 20px;
+        padding: 18px 20px 15px 17px;
+        margin-bottom: 14px;
+        backdrop-filter: blur(5px);
+        border-left: 3px solid #2575fc;
+        font-family: 'Poppins', 'Montserrat', sans-serif;
+        transition: transform 0.16s cubic-bezier(.62,.05,.52,.95);
+        position: relative;
+        min-width: 0;
+        word-break: break-word;
 
-      .expenseCard {
-        background: #fff;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 12px;
-        margin-bottom: 12px; /* spacing between cards (reliable inside a scroll container) */
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-        min-width: 0; /* prevents overflow from long text */
-        box-sizing: border-box;
+        &__header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 0.5rem;
+        }
 
-        div {
-          margin-bottom: 6px;
-          font-size: 14px;
+        &__category {
           display: flex;
           align-items: center;
-          justify-content: space-between;
-          gap: 10px;
-          strong { color: #001727; }
+          gap: 7px;
+          font-size: .9rem;
+          font-weight: 600;
+          color: #2575fc;
+          border-radius: 7px;
+          padding: 3px 8px 3px 4px;
+          background: rgba(37, 117, 252, 0.13);
+        }
+
+        &__price {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          font-size: .8rem;
+          font-weight: 700;
+          color: #ff5a69;
+          padding: 3px 10px;
+          background: rgba(255, 90, 105, 0.13);
+          border-radius: 7px;
+          box-shadow: 0 1px 4px 0 rgba(255, 90, 105, 0.08);
+        }
+
+        &__content {
+          margin-top: 10px;
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          gap: 6px;
+          font-size: 0.96rem;
+        }
+
+        &__item, &__qty, &__person {
+          background: rgba(255,255,255,0.13);
+          border-radius: 7px;
+          padding: 5px 8px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-weight: 500;
+          font-size: 14px;
+          color: #383e4a;
+          min-width: 0;
+          box-shadow: 0 1px 4px 0 rgba(38,117,252,0.035);
+        }
+
+        &__icon, &__icon--primary, &__icon--price {
+          width: 17px;
+          height: 17px;
+          opacity: 0.80;
+        }
+
+        &__icon--primary {
+          color: #2575fc;
+        }
+        &__icon--price {
+          height: 15px;
+          width: 15px;
+          color: #ff5a69;
+          filter: drop-shadow(0 1px 3px rgba(255,90,105,0.18));
         }
       }
-
-      /* ensure final card has a little extra breathing room (optional) */
-      .expenseCard:last-child { margin-bottom: 0; }
     }
   }
 }
 
-
+.smooth-fade {
+  animation: fadeIn 0.32s cubic-bezier(.62,.05,.52,.95) 0.08s backwards;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px);}
+  to { opacity: 1; transform: translateY(0);}
+}
