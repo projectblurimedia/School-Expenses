@@ -6,8 +6,16 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
-function Home() {
+function Home({setIsAuth}) {
   const navigate = useNavigate()
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setIsAuth(false);   // 🚀 update App state immediately
+    navigate("/login", { replace: true });
+  };
+
 
   const todayDate = new Date().toLocaleDateString(undefined, {
     year: 'numeric',
@@ -113,6 +121,9 @@ function Home() {
 
   return (
     <div className="homeContainer">
+      <div className="logoutButton" onClick={handleLogout}>
+          <span>Logout</span>
+      </div>
       <div className="headerImageContainer">
         <img
           src="https://static.vecteezy.com/system/resources/previews/011/844/721/non_2x/back-to-school-horizontal-banner-with-colorful-lettering-online-courses-learning-and-tutorials-web-page-template-online-education-concept-free-vector.jpg"
@@ -123,6 +134,7 @@ function Home() {
           <h1>Expenses Tracking System</h1>
           <p>Sai Rakesh E.M High School</p>
         </div>
+         
       </div>
 
       <div className="todayExpensesContainer">
@@ -136,7 +148,43 @@ function Home() {
           <div className="date">{todayDate}</div>
         </div>
 
-        <div className="tableWrapper">
+        {/* <div className="tableWrapper">
+          <table className="expensesTable">
+            <thead>
+              <tr>
+                <th>S.No</th>
+                <th>Category</th>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Cost</th>
+                <th>Person</th>
+              </tr>
+            </thead>
+            <tbody>
+              {records.length > 0 ? (
+                records.map((expense, index) => (
+                  <tr key={expense._id || index}>
+                    <td>{index + 1}</td>
+                    <td>{capitalizeWords(expense.category)}</td>
+                    <td>{capitalizeWords(expense.item)}</td>
+                    <td>{expense.quantity}</td>
+                    <td>{formatIndianNumber(expense.price)}</td>
+                    <td>{capitalizeWords(expense.person)}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" style={{ textAlign: 'center' }}>
+                    No expenses recorded today.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div> */}
+
+        {/* Desktop Table */}
+        <div className="tableWrapper desktopOnly">
           <table className="expensesTable">
             <thead>
               <tr>
@@ -170,6 +218,47 @@ function Home() {
             </tbody>
           </table>
         </div>
+
+        {/* Mobile Cards */}
+        {/* <div className="mobileOnly">
+          <div className="cardsWrapper">
+            {records.length > 0 ? (
+              records.map((expense, index) => (
+                <div className="expenseCard" key={expense._id || index}>
+                  <div><strong>Category:</strong> {capitalizeWords(expense.category)}</div>
+                  <div><strong>Item:</strong> {capitalizeWords(expense.item)}</div>
+                  <div><strong>Quantity:</strong> {expense.quantity}</div>
+                  <div><strong>Cost:</strong> {formatIndianNumber(expense.price)}</div>
+                  <div><strong>Person:</strong> {capitalizeWords(expense.person)}</div>
+                </div>
+              ))
+            ) : (
+              <div className="noRecords">No expenses recorded today.</div>
+            )}
+          </div>
+        </div> */} 
+        <div className="mobileOnly">
+          <div className="cardsScrollWrapper">
+            <div className="cardsWrapper">
+              {records.length > 0 ? (
+                records.map((expense, index) => (
+                  <div className="expenseCard" key={expense._id || index}>
+                    <div><strong>Category:</strong> {capitalizeWords(expense.category)}</div>
+                    <div><strong>Item:</strong> {capitalizeWords(expense.item)}</div>
+                    <div><strong>Quantity:</strong> {expense.quantity}</div>
+                    <div><strong>Cost:</strong> {formatIndianNumber(expense.price)}</div>
+                    <div><strong>Person:</strong> {capitalizeWords(expense.person)}</div>
+                  </div>
+                ))
+              ) : (
+                <div className="noRecords">No expenses recorded today.</div>
+              )}
+            </div>
+          </div>
+        </div>
+
+
+
       </div>
 
       <div className="viewAndCreateButtonsContainer">
@@ -181,6 +270,7 @@ function Home() {
           <FontAwesomeIcon icon={faPlus} />
           <span>Add Expense</span>
         </div>
+        
       </div>
 
       {isAddExpenseVisible && (

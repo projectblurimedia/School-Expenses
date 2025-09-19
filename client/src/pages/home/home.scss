@@ -14,6 +14,30 @@ body, html {
   height: 100vh;
   width: 100vw;
   background-color: aliceblue;
+  .logoutButton{
+    display: flex;
+    position: absolute;
+    z-index: 200;
+    right: 10px;
+    top: 10px;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 15px;
+    border-radius: 50px;
+    background-color: #1d9bf0;
+    font-size: 14px;
+    color: aliceblue;
+    font-weight: 500;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: #0c7abf;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+  }
 
   .headerImageContainer {
     width: 100%;
@@ -113,7 +137,7 @@ body, html {
       }
     }
 
-    .tableWrapper {
+    .tableWrapper.desktopOnly {
       flex: 1;
       overflow: hidden;
       border: 1px solid #e6ecf0;
@@ -129,6 +153,7 @@ body, html {
         display: flex;
         flex-direction: column;
         height: 100%;
+        overflow: hidden;
 
         thead {
           background-color: #1d9bf0;
@@ -154,7 +179,7 @@ body, html {
           flex: 1;
 
           &::-webkit-scrollbar {
-            width: 2px;
+            width: 4px;
             height: 0px;
           }
           
@@ -191,6 +216,7 @@ body, html {
         }
       }
     }
+    
   }
 
   .viewAndCreateButtonsContainer {
@@ -293,6 +319,7 @@ body, html {
           }
         }
       }
+    
     }
     
     .viewAndCreateButtonsContainer {
@@ -388,3 +415,72 @@ body, html {
     }
   }
 }
+
+.desktopOnly {
+  display: flex !important;
+}
+
+.mobileOnly {
+  display: none !important;
+}
+
+
+//responsive
+/* put this at the end of home.scss (inside or replacing your current mobile query) */
+@media (max-width: 768px) {
+  .desktopOnly { display: none !important; }
+  .mobileOnly { display: block !important; }
+
+  .mobileOnly {
+    .cardsScrollWrapper {
+      /* Use available viewport height minus header/controls.
+         Tweak the 260px number if your header/buttons are taller/shorter. */
+      max-height: calc(100vh - 280px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch; /* smooth momentum scrolling on iOS */
+      box-sizing: border-box;
+      padding: 12px 10px 96px; /* IMPORTANT: big bottom padding so last card can fully scroll into view */
+      border: 1px solid #e6ecf0;
+      border-radius: 8px;
+
+      /* scrollbar style (same as your table) */
+      &::-webkit-scrollbar { width: 4px; }
+      &::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+      &::-webkit-scrollbar-thumb { background: #1d9bf0; border-radius: 4px; }
+
+      /* Optional: help browsers respect padding when snapping/focusing */
+      scroll-padding-bottom: 110px;
+
+      .cardsWrapper {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .expenseCard {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 12px; /* spacing between cards (reliable inside a scroll container) */
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        min-width: 0; /* prevents overflow from long text */
+        box-sizing: border-box;
+
+        div {
+          margin-bottom: 6px;
+          font-size: 14px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 10px;
+          strong { color: #001727; }
+        }
+      }
+
+      /* ensure final card has a little extra breathing room (optional) */
+      .expenseCard:last-child { margin-bottom: 0; }
+    }
+  }
+}
+
+
