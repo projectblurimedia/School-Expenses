@@ -120,8 +120,9 @@ function App() {
         />
         <Route
           path="/"
-          element={isAuth ? <Home /> : <Navigate to="/login" replace />}
+          element={isAuth ? <Home setIsAuth={setIsAuth} /> : <Navigate to="/login" replace />}
         />
+
         <Route
           path="/expenses"
           element={isAuth ? <Expenses /> : <Navigate to="/login" replace />}
