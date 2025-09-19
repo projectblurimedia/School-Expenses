@@ -1,5 +1,7 @@
-import './analyticsView.scss'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faHourglassStart } from '@fortawesome/free-solid-svg-icons'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
+import './analyticsView.scss'
 
 const AnalyticsView = ({
   records,
@@ -8,8 +10,18 @@ const AnalyticsView = ({
   total,
   formatPrice,
   COLORS,
-  renderCustomizedLabel
+  renderCustomizedLabel,
+  isFetching
 }) => {
+  if (isFetching) {
+    return (
+      <div className="loadingContainer">
+        <FontAwesomeIcon icon={faHourglassStart} className="spinnerIcon" spin />
+        <span>Loading...</span>
+      </div>
+    )
+  }
+
   return (
     <div className="analyticsWrapper">
       <div className={`filterSummaryContainer ${records.length > 0 ? 'has-total' : ''}`}>

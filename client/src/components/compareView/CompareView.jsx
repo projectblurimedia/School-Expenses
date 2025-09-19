@@ -1,13 +1,25 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faHourglassStart } from '@fortawesome/free-solid-svg-icons'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import './compareView.scss'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 
-const CompareView = ({ compareYear, compareRange, compareStartYear, compareEndYear, compareData, formatPrice }) => {
+const CompareView = ({ compareYear, compareRange, compareStartYear, compareEndYear, compareData, formatPrice, isFetching }) => {
+  console.log('heyyyyyyyy')
   const getFilterSummary = () => {
     if (compareRange === 'Year') {
       return `Monthly Expenses for ${compareYear}`
     } else {
       return `Yearly Expenses from ${compareStartYear} to ${compareEndYear}`
     }
+  }
+
+  if (isFetching) {
+    return (
+      <div className="loadingContainer">
+        <FontAwesomeIcon icon={faHourglassStart} className="spinnerIcon" spin />
+        <span>Loading...</span>
+      </div>
+    )
   }
 
   return (

@@ -1,11 +1,12 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft, faDownload } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft, faDownload, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import './expensesHeader.scss'
 
 const ExpensesHeader = ({
   activeTab,
   annualTotal,
   monthlyTotal,
+  isFetchingTotals,
   formatPrice,
   handleGoBackToHome,
   showExportDropdown,
@@ -38,12 +39,24 @@ const ExpensesHeader = ({
         <div className="amountDetails">
           <div className="amountItem">
             <div className="amountLabel">Annual Amount</div>
-            <div className="amountValue">₹ {formatPrice(annualTotal)}</div>
+            <div className="amountValue">
+              {isFetchingTotals ? (
+                <FontAwesomeIcon icon={faSpinner} className="spinnerIcon" spin />
+              ) : (
+                `₹ ${formatPrice(annualTotal)}`
+              )}
+            </div>
           </div>
           <div className="divider"></div>
           <div className="amountItem">
             <div className="amountLabel">This Month</div>
-            <div className="amountValue">₹ {formatPrice(monthlyTotal)}</div>
+            <div className="amountValue">
+              {isFetchingTotals ? (
+                <FontAwesomeIcon icon={faSpinner} className="spinnerIcon" spin />
+              ) : (
+                `₹ ${formatPrice(monthlyTotal)}`
+              )}
+            </div>
           </div>
         </div>
       </div>

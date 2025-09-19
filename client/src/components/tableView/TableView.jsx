@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faHourglassStart } from '@fortawesome/free-solid-svg-icons'
 import './tableView.scss'
 
 const TableView = ({
@@ -10,8 +12,18 @@ const TableView = ({
   getCategoryAggregatedData,
   getItemAggregatedData,
   capitalize,
-  formatDate
+  formatDate,
+  isFetching
 }) => {
+  if (isFetching) {
+    return (
+      <div className="loadingContainer">
+        <FontAwesomeIcon icon={faHourglassStart} className="spinnerIcon" spin />
+        <span>Loading...</span>
+      </div>
+    )
+  }
+
   return (
     <div className="tableWrapper">
       <div className={`filterSummaryContainer ${records.length > 0 ? 'has-total' : ''}`}>

@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendar, faChartPie, faChevronDown, faFileArrowDown, faTable, faChartBar, faChartLine } from '@fortawesome/free-solid-svg-icons'
+import { faCalendar, faChartPie, faChevronDown, faFileArrowDown, faTable, faChartLine, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import './controlSection.scss'
@@ -35,7 +35,6 @@ const ControlSection = ({
   canGetRecords,
   handleGetRecords,
   isFetching,
-  // Compare tab props
   compareYear,
   compareRange,
   showYearDropdown,
@@ -247,8 +246,16 @@ const ControlSection = ({
           } ${isFetching ? 'fetching' : ''}`} 
           onClick={activeTab === 'compare' ? (filtersChanged() && canGetRecords() ? handleCompare : null) : (filtersChanged() && canGetRecords() ? handleGetRecords : null)}
         >
-          <div className="filterLabel">{activeTab === 'compare' ? 'Compare' : 'Get Records'}</div>
-          <FontAwesomeIcon icon={faFileArrowDown} className="filterIcon" />
+          <div className="filterLabel">
+            {isFetching ? (
+              <FontAwesomeIcon icon={faSpinner} className="spinnerIcon" spin />
+            ) : (
+              activeTab === 'compare' ? 'Compare' : 'Get Records'
+            )}
+          </div>
+          {!isFetching && (
+            <FontAwesomeIcon icon={faFileArrowDown} className="filterIcon" />
+          )}
         </div>
       </div>
     </div>

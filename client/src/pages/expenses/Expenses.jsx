@@ -1,9 +1,6 @@
 import './expenses.scss'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft, faCalendar, faDownload, faChartPie, faChevronDown, faFileArrowDown, faTable, faChartBar } from '@fortawesome/free-solid-svg-icons'
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import axios from 'axios'
 import * as XLSX from "xlsx";
@@ -14,6 +11,7 @@ import AnalyticsView from '../../components/analyticsView/AnalyticsView'
 import TableView from '../../components/tableView/TableView'
 import ControlSection from '../../components/controlSection/ControlSection'
 import ExpensesHeader from '../../components/expensesHeader/ExpensesHeader'
+import ToastNotification from '../../components/toastNotification/ToastNotification'
 
 const Expenses = () => {
   const navigate = useNavigate()
@@ -39,10 +37,16 @@ const Expenses = () => {
   const [records, setRecords] = useState([])
   const [annualTotal, setAnnualTotal] = useState(0)
   const [monthlyTotal, setMonthlyTotal] = useState(0)
-  const [isFetching, setIsFetching] = useState(false)
+  const [isFetching, setIsFetching] = useState(true)
+  const [isFetchingTotals, setIsFetchingTotals] = useState(true)
   const [showExportDropdown, setShowExportDropdown] = useState(false)
+  const [error, setError] = useState(null)
+  const [initialFetches, setInitialFetches] = useState({
+    table: false,
+    analytics: false,
+    compare: false
+  })
   
-  // Compare tab specific states
   const [compareYear, setCompareYear] = useState(new Date().getFullYear())
   const [compareRange, setCompareRange] = useState('Year')
   const [showYearDropdown, setShowYearDropdown] = useState(false)
@@ -56,7 +60,6 @@ const Expenses = () => {
   const [appliedCompareEndYear, setAppliedCompareEndYear] = useState(null)
   const [compareData, setCompareData] = useState([])
 
-  // Refs for capturing screenshots
   const analyticsRef = useRef(null)
   const compareRef = useRef(null)
 
@@ -91,6 +94,7 @@ const Expenses = () => {
         setCategories([{ name: 'All Categories', _id: null }, ...response.data.map(cat => ({...cat, name: capitalize(cat.name)}))])
       } catch (err) {
         console.error('Error fetching categories:', err)
+        setError('Failed to fetch categories. Please try again.')
       }
     }
     fetchCategories()
@@ -103,12 +107,11 @@ const Expenses = () => {
         const fetchedItems = response.data.map(item => capitalize(item.name))
         setItems(['All Items', ...fetchedItems])
         setSelectedItem('All Items')
-        setShowItemDropdown(true)
       } catch (err) {
         console.error('Error fetching items:', err)
+        setError('Failed to fetch items. Please try again.')
         setItems(['All Items'])
         setSelectedItem('All Items')
-        setShowItemDropdown(true)
       }
     }
     if (selectedCategory._id) {
@@ -121,11 +124,8 @@ const Expenses = () => {
   }, [selectedCategory._id])
 
   useEffect(() => {
-    handleGetRecords()
-  }, [])
-
-  useEffect(() => {
     const fetchTotals = async () => {
+      setIsFetchingTotals(true)
       const now = new Date()
       const annualStart = new Date(now.getFullYear(), 0, 1).toISOString().split('T')[0]
       const annualEnd = new Date(now.getFullYear(), 11, 31).toISOString().split('T')[0]
@@ -135,6 +135,7 @@ const Expenses = () => {
         setAnnualTotal(annualSum)
       } catch (err) {
         console.error('Error fetching annual total:', err)
+        setError('Failed to fetch annual total.')
       }
 
       const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0]
@@ -145,6 +146,9 @@ const Expenses = () => {
         setMonthlyTotal(monthSum)
       } catch (err) {
         console.error('Error fetching monthly total:', err)
+        setError('Failed to fetch monthly total.')
+      } finally {
+        setIsFetchingTotals(false)
       }
     }
     fetchTotals()
@@ -181,9 +185,22 @@ const Expenses = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
+  // Initial fetch for Table tab on component mount
   useEffect(() => {
-    if (activeTab === 'compare') {
+    if (!initialFetches.table) {
+      handleGetRecords()
+      setInitialFetches(prev => ({ ...prev, table: true }))
+    }
+  }, [])
+
+  // Fetch data when switching tabs for the first time
+  useEffect(() => {
+    if (activeTab === 'analytics' && !initialFetches.analytics) {
+      handleGetRecords()
+      setInitialFetches(prev => ({ ...prev, analytics: true }))
+    } else if (activeTab === 'compare' && !initialFetches.compare) {
       handleCompare()
+      setInitialFetches(prev => ({ ...prev, compare: true }))
     }
   }, [activeTab])
 
@@ -228,34 +245,31 @@ const Expenses = () => {
         setEndDate(null)
         setSelectedDate(null)
         setShowCalendar(true)
-      } else {
-        if (range === 'Date') {
-          const today = new Date()
-          setSelectedDate(today)
-          setStartDate(today)
-          setEndDate(today)
-          setShowCalendar(false)
-        } else if (range === 'Month') {
-          const selected = selectedDate || new Date()
-          const year = selected.getFullYear()
-          const month = selected.getMonth()
-          const start = new Date(Date.UTC(year, month, 1, 0, 0, 0, 0))
-          const end = new Date(Date.UTC(year, month + 1, 0, 23, 59, 59, 999))
-          setStartDate(start)
-          setEndDate(end)
-          setSelectedDate(selected)
-          setShowCalendar(true)
-        } else if (range === 'Year') {
-          const today = new Date()
-          const year = today.getFullYear()
-          const start = new Date(Date.UTC(year, 0, 1, 0, 0, 0, 0))
-          const end = new Date(Date.UTC(year, 11, 31, 23, 59, 59, 999))
-          setStartDate(start)
-          setEndDate(end)
-          setSelectedDate(today)
-          setShowCalendar(true)
-        }
-        setShowCalendar(range === 'Year' || range === 'Month')
+      } else if (range === 'Date') {
+        const today = new Date()
+        setSelectedDate(today)
+        setStartDate(today)
+        setEndDate(today)
+        setShowCalendar(true)
+      } else if (range === 'Month') {
+        const selected = selectedDate || new Date()
+        const year = selected.getFullYear()
+        const month = selected.getMonth()
+        const start = new Date(Date.UTC(year, month, 1, 0, 0, 0, 0))
+        const end = new Date(Date.UTC(year, month + 1, 0, 23, 59, 59, 999))
+        setStartDate(start)
+        setEndDate(end)
+        setSelectedDate(selected)
+        setShowCalendar(true)
+      } else if (range === 'Year') {
+        const today = new Date()
+        const year = today.getFullYear()
+        const start = new Date(Date.UTC(year, 0, 1, 0, 0, 0, 0))
+        const end = new Date(Date.UTC(year, 11, 31, 23, 59, 59, 999))
+        setStartDate(start)
+        setEndDate(end)
+        setSelectedDate(today)
+        setShowCalendar(true)
       }
     } else {
       setShowCalendar(true)
@@ -272,6 +286,7 @@ const Expenses = () => {
       setEndDate(end)
       setSelectedDate(date)
       setShowCalendar(false)
+      setShowDateDropdown(false)
     } else if (selectedDateRange === 'Year') {
       const year = date.getFullYear()
       const start = new Date(Date.UTC(year, 0, 1, 0, 0, 0, 0))
@@ -280,6 +295,7 @@ const Expenses = () => {
       setEndDate(end)
       setSelectedDate(date)
       setShowCalendar(false)
+      setShowDateDropdown(false)
     } else if (selectedDateRange === 'Custom Range') {
       const utcDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0))
       if (!startDate) {
@@ -287,6 +303,7 @@ const Expenses = () => {
       } else if (!endDate && utcDate >= startDate) {
         setEndDate(utcDate)
         setShowCalendar(false)
+        setShowDateDropdown(false)
       } else {
         setStartDate(utcDate)
         setEndDate(null)
@@ -297,6 +314,7 @@ const Expenses = () => {
       setStartDate(date)
       setEndDate(date)
       setShowCalendar(false)
+      setShowDateDropdown(false)
     }
   }
 
@@ -326,6 +344,8 @@ const Expenses = () => {
       setAppliedEndDate(endDate)
     } catch (err) {
       console.error('Error fetching records:', err)
+      setError('Failed to fetch records. Please try again.')
+      setRecords([])
     } finally {
       setIsFetching(false)
     }
@@ -333,10 +353,6 @@ const Expenses = () => {
 
   const handleCompare = async () => {
     setIsFetching(true)
-    console.log('Compare clicked with:', { 
-      compareRange, 
-      ...(compareRange === 'Year' ? { compareYear } : { compareStartYear, compareEndYear }) 
-    })
     
     try {
       let data = []
@@ -363,6 +379,7 @@ const Expenses = () => {
       setAppliedCompareRange(compareRange)
     } catch (err) {
       console.error('Error fetching compare data:', err)
+      setError('Failed to fetch compare data. Please try again.')
       setCompareData([])
     } finally {
       setIsFetching(false)
@@ -384,6 +401,7 @@ const Expenses = () => {
       link.click()
     } catch (err) {
       console.error('Error downloading screenshot:', err)
+      setError('Failed to download screenshot. Please try again.')
     }
   }
 
@@ -534,7 +552,7 @@ const Expenses = () => {
 
   const handleExport = (format = "csv") => {
     if (!records || records.length === 0) {
-      alert("No records to export!")
+      setError('No records to export!')
       return
     }
 
@@ -582,8 +600,6 @@ const Expenses = () => {
       XLSX.utils.book_append_sheet(wb, ws, "Expenses")
       XLSX.writeFile(wb, fileName)
     }
-
-    alert(`Downloading ${fileLabel} data as ${format.toUpperCase()}`)
   }
 
   const handleYearSelect = (year) => {
@@ -634,6 +650,7 @@ const Expenses = () => {
         activeTab={activeTab}
         annualTotal={annualTotal}
         monthlyTotal={monthlyTotal}
+        isFetchingTotals={isFetchingTotals}
         formatPrice={formatPrice}
         handleGoBackToHome={handleGoBackToHome}
         showExportDropdown={showExportDropdown}
@@ -699,7 +716,7 @@ const Expenses = () => {
         handleCompare={handleCompare}
       />
       
-      <div className="contentWrapper">
+      <div className="contentContainer">
         {activeTab === 'table' && (
           <TableView
             records={records}
@@ -712,10 +729,11 @@ const Expenses = () => {
             getItemAggregatedData={getItemAggregatedData}
             capitalize={capitalize}
             formatDate={formatDate}
+            isFetching={isFetching}
           />
         )}
         {activeTab === 'analytics' && (
-          <div ref={analyticsRef}>
+          <div ref={analyticsRef} className='contentWrapper'>
             <AnalyticsView
               records={records}
               filterSummary={filterSummary}
@@ -724,11 +742,12 @@ const Expenses = () => {
               formatPrice={formatPrice}
               COLORS={COLORS}
               renderCustomizedLabel={renderCustomizedLabel}
+              isFetching={isFetching}
             />
           </div>
         )}
         {activeTab === 'compare' && (
-          <div ref={compareRef}>
+          <div ref={compareRef} className='contentWrapper'>
             <CompareView 
               compareYear={compareYear}
               compareRange={compareRange}
@@ -736,10 +755,19 @@ const Expenses = () => {
               compareEndYear={compareEndYear}
               compareData={compareData}
               formatPrice={formatPrice}
+              isFetching={isFetching}
             />
           </div>
         )}
       </div>
+
+      {error && (
+        <ToastNotification
+          message={error}
+          type="error"
+          onClose={() => setError(null)}
+        />
+      )}
     </div>
   )
 }
