@@ -749,10 +749,10 @@ const Expenses = () => {
         {activeTab === 'compare' && (
           <div ref={compareRef} className='contentWrapper'>
             <CompareView 
-              compareYear={compareYear}
-              compareRange={compareRange}
-              compareStartYear={compareStartYear}
-              compareEndYear={compareEndYear}
+              appliedCompareYear={appliedCompareYear}
+              appliedCompareRange={appliedCompareRange}
+              appliedCompareStartYear={appliedCompareStartYear}
+              appliedCompareEndYear={appliedCompareEndYear}
               compareData={compareData}
               formatPrice={formatPrice}
               isFetching={isFetching}

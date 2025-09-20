@@ -3,86 +3,105 @@
   border-radius: 12px;
   background: #ffffff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  overflow: auto;
   margin-top: 10px;
   margin-bottom: 10px;
+  position: relative;
+}
 
-  .filterSummaryContainer {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    background: #f1f5f9;
-    border-bottom: 1px solid #e2e8f0;
-    color: #0f172a;
-    font-size: 16px;
-  }
+.tableWrapper .filterSummaryContainer {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: #f1f5f9;
+  border-bottom: 1px solid #e2e8f0;
+  color: #0f172a;
+  font-size: 16px;
+}
 
-  .filterSummaryContainer.has-total {
-    justify-content: space-between;
-    padding: 15px 30px;
-  }
+.tableWrapper .filterSummaryContainer.has-total {
+  justify-content: space-between;
+  padding: 15px 30px;
+}
 
-  .filterSummaryContainer:not(.has-total) {
-    justify-content: center;
-  }
+.tableWrapper .filterSummaryContainer:not(.has-total) {
+  justify-content: center;
+}
 
-  .filterSummary {
-    font-weight: 600;
-  }
+.tableWrapper .filterSummary {
+  font-weight: 600;
+}
 
-  .totalAmount {
-    font-weight: 600;
-    color: #0f172a;
-    font-size: 16px;
-  }
+.tableWrapper .totalAmount {
+  font-weight: 600;
+  color: #0f172a;
+  font-size: 16px;
+}
 
-  .expensesTable {
-    width: max-content;
-    margin: 20px auto;
-    border-collapse: collapse;
-    font-size: 14px;
-    border-radius: 12px;
-    overflow: hidden;
+.tableWrapper .desktopView {
+  overflow: auto;
+}
 
-    thead {
-      background-color: #1d9bf0;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      
-      th {
-        padding: 14px 16px;
-        text-align: left;
-        border-right: 1px solid #e2e8f0;
-        border-bottom: 1px solid #e2e8f0;
-        font-weight: 600;
-        color: aliceblue;
-      }
-    }
+.tableWrapper .expensesTable {
+  width: max-content;
+  margin: 20px auto;
+  border-collapse: collapse;
+  font-size: 14px;
+  border-radius: 12px;
+  overflow: hidden;
+}
 
-    tbody {
-      tr {
-        font-weight: 500;
-        border-bottom: 1px solid #1d9cf02b;
+.tableWrapper .expensesTable thead {
+  background-color: #1d9bf0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
 
-        &:hover {
-          background-color: #ecf3f9;
-        }
+.tableWrapper .expensesTable thead th {
+  padding: 14px 16px;
+  text-align: left;
+  border-right: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  font-weight: 600;
+  color: aliceblue;
+}
 
-        td {
-          padding: 14px 16px;
-          border-right: 1px solid #1d9cf02b;  
-        }
+.tableWrapper .expensesTable tbody tr {
+  font-weight: 500;
+  border-bottom: 1px solid #1d9cf02b;
+}
 
-        td.noRecords {
-          text-align: center;
-          color: #64748b;
-          font-style: italic;
-          font-size: 16px;
-        }
-      }
-    }
-  }
+.tableWrapper .expensesTable tbody tr:hover {
+  background-color: #ecf3f9;
+}
+
+.tableWrapper .expensesTable tbody td {
+  padding: 14px 16px;
+  border-right: 1px solid #1d9cf02b;
+}
+
+.tableWrapper .expensesTable tbody td.noRecords {
+  text-align: center;
+  color: #64748b;
+  font-style: italic;
+  font-size: 16px;
+}
+
+.tableWrapper .expensesTable tbody .clickableRow {
+  cursor: pointer;
+}
+
+.tableWrapper .mobileView {
+  display: none;
+  padding: 15px;
+}
+
+.tableWrapper .mobileView .noRecords {
+  text-align: center;
+  color: #64748b;
+  font-style: italic;
+  font-size: 16px;
+  padding: 20px;
 }
 
 .loadingContainer {
@@ -96,33 +115,33 @@
   font-family: 'Poppins';
   color: #202d3a;
   font-weight: 500;
-
-  .spinnerIcon {
-    font-size: 1rem;
-    color: #007bff;
-    margin-bottom: 0.5rem;
-  }
 }
 
-@media (max-width: 640px) {
-  .tableWrapper {
-    overflow-x: auto;
-    
-    .expensesTable {
-      min-width: 600px;
-    }
+.loadingContainer .spinnerIcon {
+  font-size: 1rem;
+  color: #007bff;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 800px) {
+  .tableWrapper .desktopView {
+    display: none;
   }
 
-  .filterSummaryContainer {
+  .tableWrapper .mobileView {
+    display: block;
+  }
+
+  .tableWrapper .filterSummaryContainer {
     flex-direction: column;
     gap: 8px;
   }
 
-  .filterSummary {
+  .tableWrapper .filterSummary {
     text-align: center;
   }
 
-  .totalAmount {
+  .tableWrapper .totalAmount {
     text-align: center;
   }
 }

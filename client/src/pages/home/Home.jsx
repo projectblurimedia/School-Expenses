@@ -1,19 +1,26 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faDownLeftAndUpRightToCenter, faEye, faPlus, faRightFromBracket, faReceipt, faUser, faTags, faBox, faRupeeSign, faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons'
+import { faEye, faHourglassStart, faPlus, faRightFromBracket, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import './home.scss'
 import AddExpense from '../../components/addExpense/AddExpense'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import ExpenseCard from '../../components/expenseCard/ExpenseCard'
+import ToastNotification from '../../components/toastNotification/ToastNotification'
 
-function Home({setIsAuth}) {
+function Home({ setIsAuth = () => {} }) {
   const navigate = useNavigate()
 
   const handleLogout = () => {
-    localStorage.removeItem("token")
-    localStorage.removeItem("user")
-    setIsAuth(false)
-    navigate("/login", { replace: true })
+    try {
+      localStorage.removeItem("token")
+      localStorage.removeItem("user")
+      setIsAuth(false) 
+      navigate("/login", { replace: true })
+    } catch (err) {
+      console.error("Error during logout:", err)
+      setError("Failed to logout. Please try again.")
+    }
   }
 
   const todayDate = new Date().toLocaleDateString(undefined, {
@@ -23,9 +30,11 @@ function Home({setIsAuth}) {
   })
 
   const [isAddExpenseVisible, setIsAddExpenseVisible] = useState(false)
-  const [records, setRecords] = useState([]) 
+  const [records, setRecords] = useState([])
   const [todayTotal, setTodayTotal] = useState(0)
-  
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(null)
+
   const capitalizeWords = (str) => {
     return str
       .toLowerCase()
@@ -59,6 +68,7 @@ function Home({setIsAuth}) {
 
   useEffect(() => {
     const fetchTodaysExpenses = async () => {
+      setIsLoading(true)
       const today = new Date()
       const todayISO = today.toISOString().split('T')[0]
       try {
@@ -68,8 +78,12 @@ function Home({setIsAuth}) {
         setRecords(res.data)
         const total = res.data.reduce((sum, exp) => sum + exp.price, 0)
         setTodayTotal(total)
+        setError(null)
       } catch (err) {
         console.error("Error fetching today's expenses:", err)
+        setError("Failed to fetch today's expenses. Please try again later.")
+      } finally {
+        setIsLoading(false)
       }
     }
     fetchTodaysExpenses()
@@ -114,40 +128,18 @@ function Home({setIsAuth}) {
     navigate('/expenses')
   }
 
-  const ExpenseCard = ({ expense }) => (
-    <div className="expenseCard-glass">
-      <div className="expenseCard-glass__header">
-        <span className="expenseCard-glass__category">
-          <FontAwesomeIcon icon={faTags} className="expenseCard-glass__icon--primary" />
-          {capitalizeWords(expense.category)}
-        </span>
-        <span className="expenseCard-glass__price">
-          <FontAwesomeIcon icon={faIndianRupeeSign} className="expenseCard-glass__icon--price" />
-          {formatIndianNumber(expense.price)}
-        </span>
-      </div>
-      <div className="expenseCard-glass__content">
-        <div className="expenseCard-glass__item smooth-fade">
-          <FontAwesomeIcon icon={faBox} className="expenseCard-glass__icon" />
-          {capitalizeWords(expense.item)}
-        </div>
-        <div className="expenseCard-glass__qty">
-          <FontAwesomeIcon icon={faReceipt} className="expenseCard-glass__icon" />
-          {expense.quantity}
-        </div>
-        <div className="expenseCard-glass__person">
-          <FontAwesomeIcon icon={faUser} className="expenseCard-glass__icon" />
-          {capitalizeWords(expense.person)}
-        </div>
-      </div>
-    </div>
-  )
-
   return (
     <div className="homeContainer">
+      {error && (
+        <ToastNotification
+          message={error}
+          type="error"
+          onClose={() => setError(null)}
+        />
+      )}
       <div className="logoutButton" onClick={handleLogout}>
-          <span>Logout</span>
-          <FontAwesomeIcon icon={faRightFromBracket} />
+        <span>Logout</span>
+        <FontAwesomeIcon icon={faRightFromBracket} />
       </div>
       <div className="headerImageContainer">
         <img
@@ -159,7 +151,6 @@ function Home({setIsAuth}) {
           <h1>Expenses Tracking System</h1>
           <p>Sai Rakesh E.M High School</p>
         </div>
-         
       </div>
 
       <div className="todayExpensesContainer">
@@ -173,58 +164,69 @@ function Home({setIsAuth}) {
           <div className="date">{todayDate}</div>
         </div>
 
-        <div className="tableWrapper desktopOnly">
-          <table className="expensesTable">
-            <thead>
-              <tr>
-                <th>S.No</th>
-                <th>Category</th>
-                <th>Item</th>
-                <th>Quantity</th>
-                <th>Cost</th>
-                <th>Person</th>
-              </tr>
-            </thead>
-            <tbody>
-              {records.length > 0 ? (
-                records.map((expense, index) => (
-                  <tr key={expense._id || index}>
-                    <td>{index + 1}</td>
-                    <td>{capitalizeWords(expense.category)}</td>
-                    <td>{capitalizeWords(expense.item)}</td>
-                    <td>{expense.quantity}</td>
-                    <td>{formatIndianNumber(expense.price)}</td>
-                    <td>{capitalizeWords(expense.person)}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="6" style={{ textAlign: 'center' }}>
-                    No expenses recorded today.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="mobileOnly">
-          <div className="cardsScrollWrapper">
-            <div className="cardsWrapper">
-              {records.length > 0 ? (
-                records.map((expense, index) => (
-                  <ExpenseCard
-                    key={expense._id || index}
-                    expense={expense}
-                  />
-                ))
-              ) : (
-                <div className="noRecords">No expenses recorded today.</div>
-              )}
-            </div>
+        {isLoading ? (
+          <div className="loadingContainer">
+            <FontAwesomeIcon icon={faHourglassStart} className="spinnerIcon" />
+            <div className="loadingText">Loading...</div>
           </div>
-        </div>
+        ) : (
+          <>
+            <div className="tableWrapper desktopOnly">
+              <table className="expensesTable">
+                <thead>
+                  <tr>
+                    <th>S.No</th>
+                    <th>Category</th>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Cost</th>
+                    <th>Person</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {records.length > 0 ? (
+                    records.map((expense, index) => (
+                      <tr key={expense._id || index}>
+                        <td>{index + 1}</td>
+                        <td>{capitalizeWords(expense.category)}</td>
+                        <td>{capitalizeWords(expense.item)}</td>
+                        <td>{expense.quantity}</td>
+                        <td>{formatIndianNumber(expense.price)}</td>
+                        <td>{capitalizeWords(expense.person)}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="6" style={{ textAlign: 'center' }}>
+                        No expenses recorded today.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
 
+            <div className="mobileOnly">
+              <div className="cardsScrollWrapper">
+                <div className="cardsWrapper">
+                  {records.length > 0 ? (
+                    records.map((expense, index) => (
+                      <ExpenseCard
+                        key={expense._id || index}
+                        expense={expense}
+                        capitalizeWords={capitalizeWords}
+                        formatIndianNumber={formatIndianNumber}
+                        serialNo={index + 1}
+                      />
+                    ))
+                  ) : (
+                    <div className="noRecords">No expenses recorded today.</div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       <div className="viewAndCreateButtonsContainer">
@@ -236,14 +238,14 @@ function Home({setIsAuth}) {
           <FontAwesomeIcon icon={faPlus} />
           <span>Add Expense</span>
         </div>
-        
       </div>
 
       {isAddExpenseVisible && (
         <AddExpense
           onClose={onCloseAddExpense}
           onExpenseAdded={(newExpense) =>
-            setRecords((prev) => [{...newExpense, 
+            setRecords((prev) => [{
+              ...newExpense,
               category: capitalizeWords(newExpense.category),
               item: capitalizeWords(newExpense.item),
               person: capitalizeWords(newExpense.person),

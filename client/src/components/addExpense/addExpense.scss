@@ -12,6 +12,8 @@
   z-index: 1000;
   user-select: none;
   font-family: 'Poppins', 'Inter', sans-serif;
+  padding: 10px;
+  box-sizing: border-box;
 
   label {
     font-size: 0.95rem;
@@ -22,10 +24,10 @@
   .expenseForm {
     background: linear-gradient(145deg, #ffffff, #f7fafc);
     border-radius: 16px;
-    padding: 2rem;
-    width: 35%;
+    padding: 1.5rem;
+    width: 90%;
     max-width: 500px;
-    max-height: 85vh;
+    max-height: 90vh;
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
     overflow-y: auto;
     position: relative;
@@ -43,8 +45,7 @@
     }
 
     &::-webkit-scrollbar {
-      width: 0px;
-      height: 0px;
+      width: 4px;
     }
 
     &::-webkit-scrollbar-track {
@@ -65,7 +66,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
 
       h2 {
         font-size: 1.4rem;
@@ -75,10 +76,10 @@
       }
 
       .closeBtn {
-        height: 36px;
-        width: 36px;
+        height: 32px;
+        width: 32px;
         border-radius: 50%;
-        font-size: 1rem;
+        font-size: 0.9rem;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -93,53 +94,18 @@
       }
     }
 
-    .errorMessage {
-      background-color: #fff5f5;
-      color: #e53e3e;
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
-      margin-bottom: 1.25rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.9rem;
-      font-weight: 500;
-
-      .errorText {
-        font-size: 14px;
-        font-weight: 600;
-      }
-
-      .errorClose {
-        color: #e53e3e;
-        font-size: 1.1rem;
-        cursor: pointer;
-        height: 20px;
-        width: 20px;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        vertical-align: middle;
-        transition: color 0.2s;
-
-        &:hover {
-          color: #c53030;
-        }
-      }
-    }
-
     .formGroup {
       flex: 1;
       display: flex;
       flex-direction: column;
       gap: 5px;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
 
       .inputHeader {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 0.75rem;
+        margin-bottom: 0.5rem;
 
         .addCustomBtn,
         .cancelCustomBtn {
@@ -148,8 +114,8 @@
           font-weight: 600;
           border: none;
           outline: none;
-          width: 100px;
-          padding: 0.4rem 0rem;
+          width: 80px;
+          padding: .5rem 0;
           border-radius: 6px;
           transition: all 0.2s ease;
 
@@ -175,11 +141,11 @@
 
         .customSelect {
           border: 2px solid #e2e8f0;
-          border-radius: 10px;
-          padding: 0.85rem;
+          border-radius: 8px;
+          padding: 0.75rem;
           background-color: #f7fafc;
           color: #2d3748;
-          font-size: 0.9rem;
+          font-size: 0.85rem;
           font-weight: 600;
           display: flex;
           justify-content: space-between;
@@ -197,11 +163,12 @@
           margin-top: 0.5rem;
           background-color: #ffffff;
           border: 2px solid #e2e8f0;
-          border-radius: 10px;
-          max-height: 220px;
+          border-radius: 8px;
+          max-height: 200px;
           overflow-y: auto;
           z-index: 10;
           box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+          width: 100%;
 
           &::-webkit-scrollbar {
             width: 4px;
@@ -209,17 +176,17 @@
 
           &::-webkit-scrollbar-track {
             background: #edf2f7;
-            border-radius: 10px;
+            border-radius: 8px;
           }
 
           &::-webkit-scrollbar-thumb {
             background: #3182ce;
-            border-radius: 10px;
+            border-radius: 8px;
           }
 
           .customOption {
-            padding: 0.85rem;
-            font-size: 0.9rem;
+            padding: 0.75rem;
+            font-size: 0.85rem;
             font-weight: 600;
             color: #2d3748;
             cursor: pointer;
@@ -234,16 +201,15 @@
 
       .customInputContainer {
         display: flex;
-        flex: 1;
         align-items: center;
         gap: 0.5rem;
 
         input {
           flex: 1;
           border: 2px solid #e2e8f0;
-          border-radius: 10px;
-          padding: 0.85rem;
-          font-size: 0.9rem;
+          border-radius: 8px;
+          padding: 0.75rem;
+          font-size: 0.85rem;
           font-weight: 600;
           background-color: #f7fafc;
           color: #222c3c;
@@ -273,10 +239,10 @@
         }
 
         .saveCustomBtn {
-          width: 100px;
-          padding: 0.75rem 0;
+          width: 70px;
+          padding: .65rem 0;
           border-radius: 8px;
-          font-size: 0.9rem;
+          font-size: 0.85rem;
           font-weight: 600;
           cursor: pointer;
           transition: all 0.2s ease;
@@ -295,17 +261,17 @@
       textarea,
       .datePicker {
         border: 2px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 0.85rem;
-        font-size: 0.9rem;
+        border-radius: 8px;
+        padding: 0.75rem;
+        font-size: 0.85rem;
         font-weight: 600;
         background-color: #f7fafc;
         color: #222c3c;
         font-family: 'Poppins';
         outline: none;
         transition: all 0.2s ease;
-        width: 100%; /* Ensure inputs and datePicker take full width of their container */
-        box-sizing: border-box; /* Prevent padding from causing overflow */
+        width: 100%;
+        box-sizing: border-box;
 
         &:focus {
           border-color: #3182ce;
@@ -329,7 +295,7 @@
       }
 
       textarea {
-        min-height: 100px;
+        min-height: 80px;
         resize: vertical;
       }
     }
@@ -337,28 +303,28 @@
     .formRow {
       display: flex;
       gap: 0.5rem;
-      width: 100%; /* Ensure formRow takes full width of parent */
-      flex-wrap: nowrap; /* Prevent wrapping to avoid layout issues */
+      width: 100%;
+      flex-wrap: nowrap;
 
       .formGroup {
-        flex: 1; /* Each formGroup takes equal space */
-        min-width: 0; /* Prevent overflow by allowing flex items to shrink */
-        max-width: 50%; /* Cap at 50% to ensure equal division */
+        flex: 1;
+        min-width: 0;
+        max-width: 50%;
       }
     }
 
     .formActions {
       display: flex;
-      gap: 1rem;
-      margin-top: 1.5rem;
+      gap: 0.75rem;
+      margin-top: 1rem;
 
       button {
         flex: 1;
-        padding: 0.75rem;
+        padding: 0.65rem;
         border: none;
         outline: none;
-        border-radius: 10px;
-        font-size: 1rem;
+        border-radius: 8px;
+        font-size: 0.9rem;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.2s ease;
@@ -388,54 +354,379 @@
       }
     }
   }
-}
 
-@media (max-width: 675px) {
-  .addExpenseContainer {
-    padding: 0.5rem;
+  .react-datepicker {
+    border: none;
+    font-family: 'Poppins', 'Inter', 'Segoe UI', sans-serif;
+    background: #ffffff;
+    border-radius: 8px;
+    width: 100%; /* Ensure DatePicker scales to container width */
+    max-width: 200px; /* Limit max width for larger screens */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* Ensure it appears above other elements */
 
-    .expenseForm {
-      padding: 1.25rem;
-      width: 100%;
-      max-height: 90vh;
+    .react-datepicker__header {
+      background: #1d9bf0;
+      color: aliceblue;
+      border-radius: 8px 8px 0 0;
+      padding: 10px;
+      border: none;
 
-      .formHeader {
-        h2 {
-          font-size: 1.25rem;
-        }
+      .react-datepicker__current-month,
+      .react-datepicker__month-text,
+      .react-datepicker__year-text {
+        color: aliceblue;
+        font-weight: 600;
+        font-size: 14px;
+      }
+    }
+
+    .react-datepicker__day-name {
+      color: #313c4b;
+      font-weight: 500;
+      font-size: 14px;
+      padding: 8px;
+      border-radius: 4px;
+      transition: all 0.2s;
+      margin: 0.166rem;
+      width: 2.05rem;
+      line-height: 1.5rem;
+    }
+
+    .react-datepicker__month-container,
+    .react-datepicker__year {
+      background: #ffffff;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .react-datepicker__day,
+    .react-datepicker__month-text,
+    .react-datepicker__year-text {
+      color: #1e293b;
+      font-weight: 500;
+      font-size: 14px;
+      padding: 8px;
+      border-radius: 4px;
+      transition: all 0.2s;
+      margin: 0.166rem;
+      width: 2rem;
+      line-height: 2rem;
+
+      &:hover {
+        background: #1d9bf0;
+        color: aliceblue;
+      }
+    }
+
+    .react-datepicker__day--selected,
+    .react-datepicker__month-text--selected,
+    .react-datepicker__year-text--selected {
+      background: #1d9bf0;
+      color: aliceblue;
+      font-weight: 600;
+    }
+
+    .react-datepicker__day--in-range {
+      background: #e6f3ff;
+      color: #1e293b;
+    }
+
+    .react-datepicker__day--in-selecting-range {
+      background: #e6f3ff;
+      color: #1e293b;
+    }
+
+    .react-datepicker__day--outside-month {
+      color: #94a3b8;
+    }
+
+    .react-datepicker__day--disabled,
+    .react-datepicker__month-text--disabled,
+    .react-datepicker__year-text--disabled {
+      opacity: 0.5;
+      color: #ccc !important;
+      pointer-events: none;
+    }
+
+    .react-datepicker__navigation {
+      top: 10px;
+
+      .react-datepicker__navigation-icon::before {
+        border-color: #d9e2ee;
       }
 
-      .formRow {
-        flex-direction: column;
-        gap: 0.75rem;
+      &:hover .react-datepicker__navigation-icon::before {
+        border-color: aliceblue;
+      }
+    }
+  }
+
+  .react-datepicker-popper {
+    z-index: 1000; /* Ensure popper is above other elements */
+    width: 100%; /* Make popper responsive */
+    max-width: 200px; /* Consistent with DatePicker max-width */
+  }
+
+  @media (max-width: 768px) {
+    .addExpenseContainer {
+      padding: 0.5rem;
+
+      .expenseForm {
+        padding: 1.25rem;
+        width: 95%;
+        max-height: 92vh;
+
+        .formHeader {
+          h2 {
+            flex: 1;
+            text-align: center;
+            font-size: 1.25rem;
+          }
+
+          .closeBtn {
+            height: 28px;
+            width: 28px;
+            font-size: 0.85rem;
+          }
+        }
+
+        .formRow {
+          flex-direction: column;
+          gap: 0.75rem;
+
+          .formGroup {
+            max-width: 100%;
+          }
+        }
 
         .formGroup {
-          max-width: 100%; /* Full width in mobile view */
+          margin-bottom: 0.75rem;
+
+          .inputHeader {
+            .addCustomBtn,
+            .cancelCustomBtn {
+              width: 80px;
+              font-size: 0.8rem;
+            }
+          }
+
+          .customSelect,
+          input,
+          textarea,
+          .datePicker {
+            font-size: 0.8rem;
+            padding: 0.65rem;
+          }
+
+          .customInputContainer {
+            .saveCustomBtn {
+              font-size: 0.8rem;
+            }
+          }
+        }
+
+        .formActions {
+          flex-direction: column;
+          gap: 0.5rem;
+
+          button {
+            padding: 0.6rem;
+            font-size: 0.85rem;
+          }
         }
       }
 
-      .formGroup {
-        margin-bottom: 1rem;
+      .react-datepicker {
+        max-width: 100%; /* Scale to container width */
+        font-size: 0.9rem; /* Slightly smaller font for smaller screens */
 
-        .customSelect,
-        input,
-        textarea,
-        .datePicker {
-          font-size: 0.85rem;
-          padding: 0.75rem;
-          width: 100%; /* Ensure full width in mobile */
-          box-sizing: border-box;
+        .react-datepicker__day-name,
+        .react-datepicker__day,
+        .react-datepicker__month-text,
+        .react-datepicker__year-text {
+          font-size: 12px;
+          padding: 6px;
+          width: 1.8rem;
+          line-height: 1.8rem;
         }
       }
 
-      .formActions {
-        flex-direction: column;
-        gap: 0.75rem;
+      .react-datepicker-popper {
+        max-width: 100%; /* Ensure popper scales with container */
+      }
+    }
+  }
 
-        button {
-          padding: 0.75rem;
-          font-size: 0.9rem;
+  @media (max-width: 480px) {
+    .addExpenseContainer {
+      padding: 0.25rem;
+
+      .expenseForm {
+        padding: 1rem;
+        width: 98%;
+        max-height: 95vh;
+
+        .formHeader {
+          h2 {
+            font-size: 1.1rem;
+          }
+
+          .closeBtn {
+            height: 24px;
+            width: 24px;
+            font-size: 0.8rem;
+          }
         }
+
+        .formGroup {
+          margin-bottom: 0.5rem;
+
+          .inputHeader {
+            .addCustomBtn,
+            .cancelCustomBtn {
+              width: 80px;
+              font-size: 0.75rem;
+            }
+          }
+
+          .customSelect,
+          input,
+          textarea,
+          .datePicker {
+            font-size: 0.75rem;
+            padding: 0.6rem;
+          }
+
+          .customInputContainer {
+            .saveCustomBtn {
+              font-size: 0.75rem;
+            }
+          }
+
+          .customOptions {
+            max-height: 150px;
+
+            .customOption {
+              padding: 0.6rem;
+              font-size: 0.75rem;
+            }
+          }
+        }
+
+        .formActions {
+          margin-top: 0.75rem;
+
+          button {
+            padding: 0.5rem;
+            font-size: 0.8rem;
+          }
+        }
+      }
+
+      .react-datepicker {
+        max-width: 100%;
+        font-size: 0.85rem;
+
+        .react-datepicker__day-name,
+        .react-datepicker__day,
+        .react-datepicker__month-text,
+        .react-datepicker__year-text {
+          font-size: 11px;
+          padding: 5px;
+          width: 1.6rem;
+          line-height: 1.6rem;
+        }
+      }
+
+      .react-datepicker-popper {
+        max-width: 100%;
+      }
+    }
+  }
+
+  @media (max-width: 400px) {
+    .addExpenseContainer {
+      padding: 0.2rem;
+
+      .expenseForm {
+        padding: 0.75rem;
+        width: 100%;
+        max-height: 96vh;
+
+        .formHeader {
+          h2 {
+            font-size: 1rem;
+          }
+
+          .closeBtn {
+            height: 22px;
+            width: 22px;
+            font-size: 0.75rem;
+          }
+        }
+
+        .formGroup {
+          margin-bottom: 0.4rem;
+
+          .inputHeader {
+            .addCustomBtn,
+            .cancelCustomBtn {
+              width: 80px;
+              font-size: 0.7rem;
+            }
+          }
+
+          .customSelect,
+          input,
+          textarea,
+          .datePicker {
+            font-size: 0.7rem;
+            padding: 0.5rem;
+          }
+
+          .customInputContainer {
+            .saveCustomBtn {
+              font-size: 0.7rem;
+            }
+          }
+
+          .customOptions {
+            max-height: 120px;
+
+            .customOption {
+              padding: 0.5rem;
+              font-size: 0.7rem;
+            }
+          }
+        }
+
+        .formActions {
+          margin-top: 0.5rem;
+
+          button {
+            padding: 0.4rem;
+            font-size: 0.75rem;
+          }
+        }
+      }
+
+      .react-datepicker {
+        max-width: 100%;
+        font-size: 0.8rem;
+
+        .react-datepicker__day-name,
+        .react-datepicker__day,
+        .react-datepicker__month-text,
+        .react-datepicker__year-text {
+          font-size: 10px;
+          padding: 4px;
+          width: 1.4rem;
+          line-height: 1.4rem;
+        }
+      }
+
+      .react-datepicker-popper {
+        max-width: 100%;
       }
     }
   }

@@ -149,7 +149,6 @@ const getFilteredExpenses = async (req, res) => {
     const { category, item, period, startDate, endDate } = req.query
     const filter = {}
 
-    console.log(req.query)
     let dateFilterSet = false
 
     if (period) {
@@ -161,10 +160,8 @@ const getFilteredExpenses = async (req, res) => {
       let end = new Date(endDate)
 
       if (period === 'Month' || period === 'Year') {
-        // endDate is already the exclusive end (start of next period)
         filter.date = { $gte: start, $lt: end }
       } else if (period === 'Date' || period === 'Custom Range') {
-        // Make end exclusive by adding one day to include the full endDate
         end.setDate(end.getDate() + 1)
         filter.date = { $gte: start, $lt: end }
       } else {
@@ -172,10 +169,8 @@ const getFilteredExpenses = async (req, res) => {
       }
 
       dateFilterSet = true
-      console.log('Applied date filter:', filter.date)
     }
 
-    // Default to today if no date filter
     if (!dateFilterSet) {
       const today = new Date()
       today.setHours(0, 0, 0, 0)
@@ -184,20 +179,13 @@ const getFilteredExpenses = async (req, res) => {
       filter.date = { $gte: today, $lt: tomorrow }
     }
 
-    // Add case-insensitive category filter if not 'All Categories'
     if (category && category !== 'All Categories') {
       filter.category = { $regex: new RegExp(category, 'i') }
     }
 
-    // Add case-insensitive item filter if not 'All Items'
     if (item && item !== 'All Items') {
       filter.item = { $regex: new RegExp(item, 'i') }
     }
-
-    // Debugging: Log the filter and count of matching documents
-    console.log('Applied filter:', filter)
-    const matchCount = await Expense.countDocuments(filter)
-    console.log('Matching documents count:', matchCount)
 
     const expenses = await Expense.find(filter).sort({ date: -1 })
     res.json(expenses)

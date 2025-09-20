@@ -131,24 +131,23 @@
 @media (max-width: 1024px) {
   .topHeader {
     .centerSection {
-      order: 3;
       width: 100%;
       
       .amountDetails {
-        width: 100%;
-        justify-content: space-around;
+        flex-direction: row;
+        gap: 12px;
       }
     }
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 680px) {
   .topHeader {
     .centerSection {
+      order: 3;
       .amountDetails {
-        flex-direction: row;
-        gap: 12px;
-        
+        width: 100%;
+        justify-content: space-around;
         .divider {
           display: none;
         }

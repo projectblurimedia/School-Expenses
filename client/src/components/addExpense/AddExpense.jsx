@@ -5,7 +5,16 @@ import { faClose, faChevronDown, faChevronUp, faSpinner } from '@fortawesome/fre
 import axios from 'axios'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import ToastNotification from '../../components/toastNotification/ToastNotification'
 
+const capitalize = (str) => {
+  if (!str) return ''
+  return str
+    .toLowerCase()
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ')
+}
 
 const AddExpense = ({ onClose, onExpenseAdded }) => {
   const today = new Date()
@@ -32,7 +41,8 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
     items: false,
     submitting: false
   })
-  const [error, setError] = useState('')
+  const [error, setError] = useState(null)
+  const [success, setSuccess] = useState(null)
 
   useEffect(() => {
     fetchCategories()
@@ -47,7 +57,7 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
         setShowCustomCategory(true)
       }
     } catch (err) {
-      setError('Failed to fetch categories')
+      setError(capitalize('Failed to fetch categories. Please try again.'))
       console.error('Error fetching categories:', err)
     } finally {
       setLoading(prev => ({ ...prev, categories: false }))
@@ -68,7 +78,7 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
         setShowCustomItem(false)
       }
     } catch (err) {
-      setError('Failed to fetch items')
+      setError(capitalize('Failed to fetch items. Please try again.'))
       console.error('Error fetching items:', err)
       setShowCustomItem(true)
     } finally {
@@ -77,10 +87,10 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
   }
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target
+    const { name, value, type } = e.target
     setFormData({
       ...formData,
-      [name]: value
+      [name]: type === 'number' ? value : capitalize(value)
     })
   }
 
@@ -102,7 +112,10 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
 
   const addCustomCategory = async () => {
     const trimName = formData.customCategory.trim()
-    if (trimName === '') return
+    if (trimName === '') {
+      setError(capitalize('Category name cannot be empty.'))
+      return
+    }
 
     const categoryExists = categories.find(
       cat => cat.name.toLowerCase() === trimName.toLowerCase()
@@ -142,7 +155,7 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
       setShowCustomItem(true)
       fetchItemsByCategory(newCategory._id)
     } catch (err) {
-      setError('Failed to create category')
+      setError(capitalize('Failed to create category. Please try again.'))
       console.error('Error creating category:', err)
     } finally {
       setLoading(prev => ({ ...prev, categories: false }))
@@ -152,12 +165,15 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
   const handleItemSelect = (item) => {
     setShowItemDropdown(false)
     setShowCustomItem(false)
-    setFormData({ ...formData, item: item.name, customItem: '' })
+    setFormData({ ...formData, item: capitalize(item.name), customItem: '' })
   }
 
   const addCustomItem = async () => {
     const trimName = formData.customItem.trim()
-    if (trimName === '' || !formData.category) return
+    if (trimName === '' || !formData.category) {
+      setError(capitalize('Item name cannot be empty and a category must be selected.'))
+      return
+    }
 
     const itemExists = items.find(
       item => item.name.toLowerCase() === trimName.toLowerCase()
@@ -166,7 +182,7 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
     if (itemExists) {
       setFormData({
         ...formData,
-        item: itemExists.name,
+        item: capitalize(itemExists.name),
         customItem: ''
       })
       setShowCustomItem(false)
@@ -186,14 +202,14 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
       
       setFormData({
         ...formData,
-        item: newItem.name,
+        item: capitalize(newItem.name),
         customItem: ''
       })
       
       setShowCustomItem(false)
       setShowItemDropdown(false)
     } catch (err) {
-      setError('Failed to create item')
+      setError(capitalize('Failed to create item. Please try again.'))
       console.error('Error creating item:', err)
     } finally {
       setLoading(prev => ({ ...prev, items: false }))
@@ -203,17 +219,22 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     
+    if (!formData.item || !formData.quantity || !formData.price || !formData.person) {
+      setError(capitalize('Please fill in all required fields (Item, Quantity, Price, Person).'))
+      return
+    }
+
     const selectedCategory = categories.find(cat => cat._id === formData.category)
-    const categoryName = selectedCategory ? selectedCategory.name : formData.customCategory
+    const categoryName = selectedCategory ? capitalize(selectedCategory.name) : capitalize(formData.customCategory)
     
     const expense = {
       category: categoryName,
       item: formData.item,
       quantity: Number(formData.quantity),
       price: Number(formData.price),
-      person: formData.person,
-      description: formData.description,
-      date: formData.date.toISOString() // Convert date to ISO string for API
+      person: capitalize(formData.person),
+      description: capitalize(formData.description),
+      date: formData.date.toISOString()
     }
 
     setLoading(prev => ({ ...prev, submitting: true }))
@@ -225,7 +246,7 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
         onExpenseAdded(res.data)
       }
       
-      alert('Expense added successfully!')
+      setSuccess(capitalize('Expense added successfully!'))
       setFormData({
         category: '',
         customCategory: '',
@@ -242,9 +263,8 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
       setCategorySelected(false)
       setShowCategoryDropdown(false)
       setShowItemDropdown(false)
-      onClose()
     } catch (err) {
-      setError('Failed to add expense')
+      setError(capitalize('Failed to add expense. Please try again.'))
       console.error('Error adding expense:', err)
     } finally {
       setLoading(prev => ({ ...prev, submitting: false }))
@@ -254,31 +274,38 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
   const getSelectedCategoryName = () => {
     if (!formData.category) return "Select a category"
     const category = categories.find(cat => cat._id === formData.category)
-    return category ? category.name : "Select a category"
+    return category ? capitalize(category.name) : "Select a category"
   }
 
   return (
     <div className="addExpenseContainer">
+      {error && (
+        <ToastNotification
+          message={error}
+          type="error"
+          onClose={() => setError(null)}
+        />
+      )}
+      {success && (
+        <ToastNotification
+          message={success}
+          type="success"
+          onClose={() => setSuccess(null)}
+        />
+      )}
       <div className="expenseForm">
         <div className="formHeader">
-          <h2>Add New Expense</h2>
+          <h2>{capitalize('Create Expense')}</h2>
           <div className="closeBtn" onClick={onClose}>
             <FontAwesomeIcon icon={faClose} />
           </div>
         </div>
 
-        {error && (
-          <div className="errorMessage">
-            <div className="errorText">{error}</div>
-            <div onClick={() => setError('')} className="errorClose">×</div>
-          </div>
-        )}
-
         <div className="formContent">
           <form onSubmit={handleSubmit}>
             <div className="formGroup">
               <div className="inputHeader">
-                <label>Category</label>
+                <label>{capitalize('Category')}</label>
                 {showCustomCategory ? (
                   <button
                     type="button"
@@ -289,7 +316,7 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
                     }}
                     disabled={loading.categories}
                   >
-                    Cancel
+                    {capitalize('Cancel')}
                   </button>
                 ) : (
                   <button
@@ -302,7 +329,7 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
                     }}
                     disabled={loading.categories}
                   >
-                    {loading.categories ? <FontAwesomeIcon icon={faSpinner} spin /> : '+ Custom'}
+                    {loading.categories ? <FontAwesomeIcon icon={faSpinner} spin /> : capitalize('+ Custom')}
                   </button>
                 )}
               </div>
@@ -314,7 +341,7 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
                     onClick={() => !loading.categories && setShowCategoryDropdown(!showCategoryDropdown)}
                   >
                     <span>
-                      {loading.categories ? 'Loading categories...' : getSelectedCategoryName()}
+                      {loading.categories ? capitalize('Loading categories...') : getSelectedCategoryName()}
                     </span>
                     {!loading.categories && categories.length > 0 && (
                       <FontAwesomeIcon icon={showCategoryDropdown ? faChevronUp : faChevronDown} />
@@ -329,7 +356,7 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
                           className="customOption"
                           onClick={() => handleCategorySelect(cat._id)}
                         >
-                          {cat.name}
+                          {capitalize(cat.name)}
                         </div>
                       ))}
                     </div>
@@ -340,7 +367,7 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
                   <input
                     type="text"
                     name="customCategory"
-                    placeholder="Enter new category"
+                    placeholder={capitalize("Enter new category")}
                     value={formData.customCategory}
                     onChange={handleInputChange}
                     required
@@ -354,7 +381,7 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
                     onClick={addCustomCategory}
                     disabled={loading.categories || !formData.customCategory.trim()}
                   >
-                    {loading.categories ? <FontAwesomeIcon icon={faSpinner} spin /> : 'Add'}
+                    {loading.categories ? <FontAwesomeIcon icon={faSpinner} spin /> : capitalize('Add')}
                   </button>
                 </div>
               )}
@@ -386,7 +413,7 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
                       }}
                       disabled={loading.items}
                     >
-                      {loading.items ? <FontAwesomeIcon icon={faSpinner} spin /> : '+ Custom'}
+                      {loading.items ? <FontAwesomeIcon icon={faSpinner} spin /> : capitalize('+ Custom')}
                     </button>
                   )}
                 </div>
@@ -398,7 +425,7 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
                       onClick={() => !loading.items && setShowItemDropdown(!showItemDropdown)}
                     >
                       <span>
-                        {loading.items ? 'Loading items...' : (formData.item || "Select an item")}
+                        {loading.items ? 'Loading items...' : (formData.item || "Select an item" )}
                       </span>
                       {!loading.items && (
                         <FontAwesomeIcon icon={showItemDropdown ? faChevronUp : faChevronDown} />
@@ -413,8 +440,8 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
                             className="customOption"
                             onClick={() => handleItemSelect(item)}
                           >
-                            {item.name}
-                        </div>
+                            {capitalize(item.name)}
+                          </div>
                         ))}
                       </div>
                     )}
@@ -424,7 +451,7 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
                     <input
                       type="text"
                       name="customItem"
-                      placeholder="Enter new item"
+                      placeholder={capitalize("Enter new item")}
                       value={formData.customItem}
                       onChange={handleInputChange}
                       required
@@ -438,7 +465,7 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
                       onClick={addCustomItem}
                       disabled={loading.items || !formData.customItem.trim()}
                     >
-                      {loading.items ? <FontAwesomeIcon icon={faSpinner} spin /> : 'Add'}
+                      {loading.items ? <FontAwesomeIcon icon={faSpinner} spin /> : capitalize('Add')}
                     </button>
                   </div>
                 )}
@@ -449,10 +476,10 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
               <>
                 <div className="formRow">
                   <div className="formGroup">
-                    <label htmlFor="quantity">Quantity</label>
+                    <label htmlFor="quantity">{capitalize('Quantity')}</label>
                     <input
                       className="input"
-                      placeholder="Enter quantity"
+                      placeholder={capitalize("Enter quantity")}
                       type="number"
                       id="quantity"
                       name="quantity"
@@ -464,10 +491,10 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
                   </div>
                 
                   <div className="formGroup">
-                    <label htmlFor="price">Price (₹)</label>
+                    <label htmlFor="price">{capitalize('Price (₹)')}</label>
                     <input
                       className="input"
-                      placeholder="Enter price"
+                      placeholder={capitalize("Enter price")}
                       type="number"
                       id="price"
                       name="price"
@@ -482,26 +509,27 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
 
                 <div className="formRow">
                   <div className="formGroup">
-                    <label htmlFor="date">Date</label>
+                    <label htmlFor="date">{capitalize('Date')}</label>
                     <DatePicker
+                      id="date"
                       selected={formData.date}
                       onChange={handleDateChange}
                       maxDate={today}
                       dateFormat="dd/MM/yyyy"
                       className="input datePicker"
-                      placeholderText="Select date"
+                      placeholderText={capitalize("Select date")}
                       required
                     />
                   </div>
 
                   <div className="formGroup">
-                    <label htmlFor="person">Person Name</label>
+                    <label htmlFor="person">{capitalize('Person Name')}</label>
                     <input
                       className="input"
                       type="text"
                       id="person"
                       name="person"
-                      placeholder="Who made this expense?"
+                      placeholder={capitalize("Person name")}
                       value={formData.person}
                       onChange={handleInputChange}
                       required
@@ -510,11 +538,11 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
                 </div>
 
                 <div className="formGroup">
-                  <label htmlFor="description">Description</label>
+                  <label htmlFor="description">{capitalize('Description')}</label>
                   <textarea
                     id="description"
                     name="description"
-                    placeholder="Add any additional details"
+                    placeholder={capitalize("Add any additional details")}
                     value={formData.description}
                     onChange={handleInputChange}
                   ></textarea>
@@ -522,10 +550,10 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
 
                 <div className="formActions">
                   <button type="button" className="cancelBtn" onClick={onClose} disabled={loading.submitting}>
-                    Cancel
+                    {capitalize('Cancel')}
                   </button>
                   <button type="submit" className="submitBtn" disabled={loading.submitting}>
-                    {loading.submitting ? <FontAwesomeIcon icon={faSpinner} spin /> : 'Add Expense'}
+                    {loading.submitting ? <FontAwesomeIcon icon={faSpinner} spin /> : capitalize('Add Expense')}
                   </button>
                 </div>
               </>

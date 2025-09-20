@@ -3,13 +3,12 @@ import { faHourglassStart } from '@fortawesome/free-solid-svg-icons'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import './compareView.scss'
 
-const CompareView = ({ compareYear, compareRange, compareStartYear, compareEndYear, compareData, formatPrice, isFetching }) => {
-  console.log('heyyyyyyyy')
+const CompareView = ({ appliedCompareYear, appliedCompareRange, appliedCompareStartYear, appliedCompareEndYear, compareData, formatPrice, isFetching }) => {
   const getFilterSummary = () => {
-    if (compareRange === 'Year') {
-      return `Monthly Expenses for ${compareYear}`
+    if (appliedCompareRange === 'Year') {
+      return `Monthly Expenses for ${appliedCompareYear}`
     } else {
-      return `Yearly Expenses from ${compareStartYear} to ${compareEndYear}`
+      return `Yearly Expenses from ${appliedCompareStartYear} to ${appliedCompareEndYear}`
     }
   }
 
@@ -54,7 +53,7 @@ const CompareView = ({ compareYear, compareRange, compareStartYear, compareEndYe
               <Line 
                 type="monotone" 
                 dataKey="total" 
-                name={compareRange === 'Year' ? 'Monthly Total' : 'Yearly Total'} 
+                name={appliedCompareRange === 'Year' ? 'Monthly Total' : 'Yearly Total'} 
                 stroke="#1d9bf0" 
                 strokeWidth={2}
                 dot={{ r: 4, fill: '#1d9bf0' }}
@@ -64,9 +63,9 @@ const CompareView = ({ compareYear, compareRange, compareStartYear, compareEndYe
           </ResponsiveContainer>
         ) : (
           <div className="chartPlaceholder">
-            {compareRange === 'Year' 
-              ? `No data available for ${compareYear}`
-              : `No data available for ${compareStartYear || 'start year'} - ${compareEndYear || 'end year'}`}
+            {appliedCompareRange === 'Year' 
+              ? `No data available for ${appliedCompareYear}`
+              : `No data available for ${appliedCompareStartYear || 'start year'} - ${appliedCompareEndYear || 'end year'}`}
           </div>
         )}
       </div>

@@ -1,12 +1,12 @@
 // ToastNotification.scss
 .toast-notification {
   position: fixed;
-  top: 15px;
-  right: 15px;
+  top: 10px;
+  right: 10px;
   min-width: 300px;
   max-width: 400px;
-  padding: 16px 15px;
-  border-radius: 6px;
+  padding: 6px 15px;
+  border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 9999;
   display: flex;
@@ -17,22 +17,43 @@
   animation: slideInRight 0.3s ease-out;
   font-family: 'Poppins', serif;
 
-  &.error {
-    background-color: #ffe4e4;
-    color: #001727;
-    border-left: 4px solid #ef4444;
-  }
-
-  &.success {
-    background-color: #d2fdef;
-    color: #001727;
-    border-left: 4px solid #059669;
-  }
-
   .toast-message {
     flex: 1;
     margin-right: 10px;
+    font-weight: 500;
   }
+
+  &.error {
+    background-color: #ffeeee;
+    color: #001727;
+    border-left: 4px solid #ef4444;
+
+    .toast-message {
+      color: #f72525;
+    }
+  }
+
+  &.success {
+    background-color: #e2fff5;
+    color: #001727;
+    border-left: 4px solid #059669;
+
+    .toast-message {
+      color: #007c55;
+    }
+  }
+
+  &.warning {
+    background-color: #feffe2;
+    color: #001727;
+    border-left: 4px solid #eaab17;
+
+    .toast-message {
+      color: #d09200;
+    }
+  }
+
+  
 
   .toast-close {
     background: none;

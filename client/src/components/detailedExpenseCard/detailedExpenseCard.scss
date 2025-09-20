@@ -1,0 +1,107 @@
+.expenseCardContainer {
+  background: linear-gradient(135deg, rgba(37, 116, 252, 0.198) 0%, rgba(132, 191, 255, 0.054) 100%);
+  border-radius: 4px;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  padding: 15px;
+  margin-bottom: 15px;
+  backdrop-filter: blur(5px);
+  border-left: 3px solid #2575fc;
+  font-family: 'Poppins', 'Montserrat', sans-serif;
+  transition: transform 0.16s cubic-bezier(.62,.05,.52,.95);
+  position: relative;
+  word-break: break-word;
+  cursor: pointer;
+}
+
+.expenseCardContainer .serialNumber {
+  position: absolute;
+  top: -5px;
+  left: -10px;
+  background: #2575fc;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  z-index: 1;
+}
+
+.expenseCard__content {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 6px;
+  font-size: 0.96rem;
+}
+
+.expenseCard__qty {
+  background: rgba(255,255,255,0.13);
+  border-radius: 7px;
+  padding: 5px 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #383e4a;
+  box-shadow: 0 1px 4px 0 rgba(38,117,252,0.035);
+}
+
+.expenseCard__price {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: .8rem;
+  font-weight: 700;
+  color: #ff5a69;
+  padding: 3px 10px;
+  background: rgba(255, 90, 104, 0.095);
+  border-radius: 7px;
+  box-shadow: 0 1px 4px 0 rgba(255, 90, 105, 0.08);
+}
+
+.expenseCard__icon {
+  width: 17px;
+  height: 17px;
+  opacity: 0.80;
+}
+
+.expenseCard__icon--price {
+  height: 15px;
+  width: 15px;
+  color: #ff5a69;
+  filter: drop-shadow(0 1px 3px rgba(255,90,105,0.18));
+}
+
+.expenseCard__person {
+  background: rgba(255,255,255,0.13);
+  border-radius: 7px;
+  padding: 5px 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #383e4a;
+  box-shadow: 0 1px 4px 0 rgba(38,117,252,0.035);
+}
+
+.expenseCard__date {
+  background: rgba(255,255,255,0.13);
+  border-radius: 7px;
+  padding: 5px 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #383e4a;
+  box-shadow: 0 1px 4px 0 rgba(38,117,252,0.035);
+}

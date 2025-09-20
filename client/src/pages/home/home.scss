@@ -32,13 +32,22 @@ body, html {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  gap: 4px;
   height: 200px;
+
+  .spinnerIcon {
+    font-size: 24px;
+    color: #1d9bf0;
+    animation: spin 1s linear infinite;
+  }
+  .loadingText {
+    font-weight: 600;
+    color: #203551;
+  }
 }
 
-.spinnerIcon {
-  font-size: 24px;
-  animation: spin 1s linear infinite;
-}
+
 
 @keyframes spin {
   100% {
@@ -287,6 +296,11 @@ body, html {
       }
     }
   }
+
+  .noRecords {
+    font-weight: 500;
+    text-align: center;
+  }
 }
 
 @media (max-width: 768px) {
@@ -404,6 +418,7 @@ body, html {
         .left {
           .title {
             font-size: 1.1rem;
+            font-weight: 500;
           }
 
           .total {
@@ -416,6 +431,9 @@ body, html {
         .date {
           font-size: 0.75rem;
           padding: 6px 12px;
+          font-weight: 600;
+          background: linear-gradient(135deg, rgba(37, 116, 252, 0.198) 0%, rgba(132, 191, 255, 0.054) 100%);
+          border-radius: 4px;
         }
       }
 
@@ -501,100 +519,6 @@ body, html {
         display: flex;
         flex-direction: column;
       }
-      // Replace the old card style with awesome glass style!
-      .expenseCard-glass {
-        background: linear-gradient(135deg, rgba(37, 116, 252, 0.198) 0%, rgba(132, 191, 255, 0.054) 100%);
-        border-radius: 4px;
-        border-top-right-radius: 20px;
-        border-bottom-right-radius: 20px;
-        padding: 18px 20px 15px 17px;
-        margin-bottom: 14px;
-        backdrop-filter: blur(5px);
-        border-left: 3px solid #2575fc;
-        font-family: 'Poppins', 'Montserrat', sans-serif;
-        transition: transform 0.16s cubic-bezier(.62,.05,.52,.95);
-        position: relative;
-        min-width: 0;
-        word-break: break-word;
-
-        &__header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 0.5rem;
-        }
-
-        &__category {
-          display: flex;
-          align-items: center;
-          gap: 7px;
-          font-size: .9rem;
-          font-weight: 600;
-          color: #2575fc;
-          border-radius: 7px;
-          padding: 3px 8px 3px 4px;
-          background: rgba(37, 117, 252, 0.13);
-        }
-
-        &__price {
-          display: flex;
-          align-items: center;
-          gap: 4px;
-          font-size: .8rem;
-          font-weight: 700;
-          color: #ff5a69;
-          padding: 3px 10px;
-          background: rgba(255, 90, 105, 0.13);
-          border-radius: 7px;
-          box-shadow: 0 1px 4px 0 rgba(255, 90, 105, 0.08);
-        }
-
-        &__content {
-          margin-top: 10px;
-          display: grid;
-          grid-template-columns: 1fr 1fr 1fr;
-          gap: 6px;
-          font-size: 0.96rem;
-        }
-
-        &__item, &__qty, &__person {
-          background: rgba(255,255,255,0.13);
-          border-radius: 7px;
-          padding: 5px 8px;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          font-weight: 500;
-          font-size: 14px;
-          color: #383e4a;
-          min-width: 0;
-          box-shadow: 0 1px 4px 0 rgba(38,117,252,0.035);
-        }
-
-        &__icon, &__icon--primary, &__icon--price {
-          width: 17px;
-          height: 17px;
-          opacity: 0.80;
-        }
-
-        &__icon--primary {
-          color: #2575fc;
-        }
-        &__icon--price {
-          height: 15px;
-          width: 15px;
-          color: #ff5a69;
-          filter: drop-shadow(0 1px 3px rgba(255,90,105,0.18));
-        }
-      }
     }
   }
-}
-
-.smooth-fade {
-  animation: fadeIn 0.32s cubic-bezier(.62,.05,.52,.95) 0.08s backwards;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px);}
-  to { opacity: 1; transform: translateY(0);}
 }
