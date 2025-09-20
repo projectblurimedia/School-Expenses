@@ -25,6 +25,7 @@
   .compareContainer {
     padding: 20px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     min-height: 300px;
@@ -41,6 +42,51 @@
       font-size: 18px;
       width: 100%;
     }
+
+    .categoryBreakdown {
+      margin-top: 10px;
+      width: 100%;
+
+      h3 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #0f172a;
+        margin-bottom: 10px;
+      }
+
+      .categoryTable {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        color: #0f172a;
+        border-radius: 5px;
+        overflow: hidden;
+        font-family: 'Poppins';
+
+        th, td {
+          padding: 8px 12px;
+          text-align: left;
+          border-right: 1px solid #e2e8f0;
+          border-left: 1px solid #e2e8f0;
+          border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+          font-weight: 600;
+          background: #1d9bf0;
+          color: aliceblue;
+        }
+
+        td {
+          font-weight: 500;
+          color: #2a3441;
+        }
+
+        tr:hover {
+          background: #f8fafc;
+        }
+      }
+    }
   }
 }
 
@@ -51,7 +97,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: .8rem;
+  font-size: 0.8rem;
   font-family: 'Poppins';
   color: #202d3a;
   font-weight: 500;

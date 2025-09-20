@@ -1,8 +1,8 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye, faHourglassStart, faPlus, faRightFromBracket, faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { faEye, faHourglassStart, faPlus, faRightFromBracket, faSpinner, faWifi } from '@fortawesome/free-solid-svg-icons'
 import './home.scss'
 import AddExpense from '../../components/addExpense/AddExpense'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import ExpenseCard from '../../components/expenseCard/ExpenseCard'
@@ -10,6 +10,8 @@ import ToastNotification from '../../components/toastNotification/ToastNotificat
 
 function Home({ setIsAuth = () => {} }) {
   const navigate = useNavigate()
+  const expensesContainerRef = useRef(null)
+  const [showScrollToTop, setShowScrollToTop] = useState(false)
 
   const handleLogout = () => {
     try {
@@ -34,6 +36,66 @@ function Home({ setIsAuth = () => {} }) {
   const [todayTotal, setTodayTotal] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [networkStatus, setNetworkStatus] = useState({
+    online: navigator.onLine,
+    showToast: false
+  })
+
+  // Network status detection
+  useEffect(() => {
+    const handleOnline = () => {
+      setNetworkStatus({ online: true, showToast: true })
+      // Hide the toast after 3 seconds
+      setTimeout(() => {
+        setNetworkStatus(prev => ({ ...prev, showToast: false }))
+      }, 3000)
+    }
+
+    const handleOffline = () => {
+      setNetworkStatus({ online: false, showToast: true })
+      setError("You are offline. Some features may not work.")
+    }
+
+    window.addEventListener('online', handleOnline)
+    window.addEventListener('offline', handleOffline)
+
+    return () => {
+      window.removeEventListener('online', handleOnline)
+      window.removeEventListener('offline', handleOffline)
+    }
+  }, [])
+
+  // Scroll to top functionality
+  useEffect(() => {
+    const handleScroll = () => {
+      if (expensesContainerRef.current) {
+        const { scrollTop } = expensesContainerRef.current
+        setShowScrollToTop(scrollTop > 100) // Show button when scrolled more than 100px from top
+      }
+    }
+
+    const container = expensesContainerRef.current
+    if (container) {
+      container.addEventListener('scroll', handleScroll)
+      // Trigger immediately to set initial state
+      handleScroll()
+    }
+
+    return () => {
+      if (container) {
+        container.removeEventListener('scroll', handleScroll)
+      }
+    }
+  }, [])
+
+  const scrollToTop = () => {
+    if (expensesContainerRef.current) {
+      expensesContainerRef.current.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      })
+    }
+  }
 
   const capitalizeWords = (str) => {
     return str
@@ -62,12 +124,25 @@ function Home({ setIsAuth = () => {} }) {
   }
 
   const openAddExpense = () => {
+    // Check if offline before opening
+    if (!navigator.onLine) {
+      setError("Cannot add expenses while offline. Please check your connection.")
+      return
+    }
+    
     setIsAddExpenseVisible(true)
     window.history.pushState({ modalOpen: true }, '')
   }
 
   useEffect(() => {
     const fetchTodaysExpenses = async () => {
+      // Don't try to fetch if offline
+      if (!navigator.onLine) {
+        setError("You are offline. Cannot fetch expenses.")
+        setIsLoading(false)
+        return
+      }
+      
       setIsLoading(true)
       const today = new Date()
       const todayISO = today.toISOString().split('T')[0]
@@ -81,7 +156,11 @@ function Home({ setIsAuth = () => {} }) {
         setError(null)
       } catch (err) {
         console.error("Error fetching today's expenses:", err)
-        setError("Failed to fetch today's expenses. Please try again later.")
+        if (err.message === 'Network Error') {
+          setError("Network error. Please check your connection.")
+        } else {
+          setError("Failed to fetch today's expenses. Please try again later.")
+        }
       } finally {
         setIsLoading(false)
       }
@@ -130,6 +209,15 @@ function Home({ setIsAuth = () => {} }) {
 
   return (
     <div className="homeContainer">
+      {networkStatus.showToast && (
+        <ToastNotification
+          message={networkStatus.online ? "Connection restored" : "You are offline"}
+          type={networkStatus.online ? "success" : "error"}
+          icon={faWifi}
+          onClose={() => setNetworkStatus(prev => ({ ...prev, showToast: false }))}
+        />
+      )}
+      
       {error && (
         <ToastNotification
           message={error}
@@ -137,10 +225,12 @@ function Home({ setIsAuth = () => {} }) {
           onClose={() => setError(null)}
         />
       )}
+      
       <div className="logoutButton" onClick={handleLogout}>
         <span>Logout</span>
         <FontAwesomeIcon icon={faRightFromBracket} />
       </div>
+      
       <div className="headerImageContainer">
         <img
           src="https://static.vecteezy.com/system/resources/previews/011/844/721/non_2x/back-to-school-horizontal-banner-with-colorful-lettering-online-courses-learning-and-tutorials-web-page-template-online-education-concept-free-vector.jpg"
@@ -153,12 +243,18 @@ function Home({ setIsAuth = () => {} }) {
         </div>
       </div>
 
-      <div className="todayExpensesContainer">
+      <div className="todayExpensesContainer" ref={expensesContainerRef}>
         <div className="todayHeading">
           <div className="left">
-            <div className="title">Today's Expenses - </div>
+            <div className="title">Today's Expenses: </div>
             <div className='total'>
               <div className='amount'>₹ {formatIndianNumber(todayTotal)}</div>
+              {!navigator.onLine && (
+                <div className="offlineIndicator">
+                  <FontAwesomeIcon icon={faWifi} />
+                  <span>Offline Mode</span>
+                </div>
+              )}
             </div>
           </div>
           <div className="date">{todayDate}</div>
@@ -226,6 +322,13 @@ function Home({ setIsAuth = () => {} }) {
               </div>
             </div>
           </>
+        )}
+        
+        {/* Scroll to top button */}
+        {showScrollToTop && (
+          <button className="scrollToTopButton" onClick={scrollToTop}>
+            <FontAwesomeIcon icon={faPlus} rotation={90} />
+          </button>
         )}
       </div>
 

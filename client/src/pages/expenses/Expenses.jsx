@@ -3,8 +3,8 @@ import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import 'react-datepicker/dist/react-datepicker.css'
 import axios from 'axios'
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
+import * as XLSX from "xlsx"
+import { saveAs } from "file-saver"
 import html2canvas from 'html2canvas'
 import CompareView from '../../components/compareView/CompareView'
 import AnalyticsView from '../../components/analyticsView/AnalyticsView'
@@ -12,6 +12,8 @@ import TableView from '../../components/tableView/TableView'
 import ControlSection from '../../components/controlSection/ControlSection'
 import ExpensesHeader from '../../components/expensesHeader/ExpensesHeader'
 import ToastNotification from '../../components/toastNotification/ToastNotification'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAnglesUp, faWifi } from '@fortawesome/free-solid-svg-icons'
 
 const Expenses = () => {
   const navigate = useNavigate()
@@ -46,6 +48,7 @@ const Expenses = () => {
     analytics: false,
     compare: false
   })
+  const [showScrollToTop, setShowScrollToTop] = useState(false)
   
   const [compareYear, setCompareYear] = useState(new Date().getFullYear())
   const [compareRange, setCompareRange] = useState('Year')
@@ -60,8 +63,16 @@ const Expenses = () => {
   const [appliedCompareEndYear, setAppliedCompareEndYear] = useState(null)
   const [compareData, setCompareData] = useState([])
 
+  // Network status state
+  const [networkStatus, setNetworkStatus] = useState({
+    online: navigator.onLine,
+    showToast: false
+  })
+
   const analyticsRef = useRef(null)
   const compareRef = useRef(null)
+  const contentContainerRef = useRef(null)
+  const expensesContainerRef = useRef(null)
 
   const categoryDropdownRef = useRef(null)
   const itemDropdownRef = useRef(null)
@@ -78,23 +89,89 @@ const Expenses = () => {
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF6384', '#9966FF', '#07ec38', '#800000', '#3fa5ea', '#f9d16b', '#0b9797', '#D9E3F0', '#F46D43', '#E6F598', '#ABDDA4']
 
+  // Network status detection
+  useEffect(() => {
+    const handleOnline = () => {
+      setNetworkStatus({ online: true, showToast: true })
+      // Hide the toast after 3 seconds
+      setTimeout(() => {
+        setNetworkStatus(prev => ({ ...prev, showToast: false }))
+      }, 3000)
+    }
+
+    const handleOffline = () => {
+      setNetworkStatus({ online: false, showToast: true })
+    }
+
+    window.addEventListener('online', handleOnline)
+    window.addEventListener('offline', handleOffline)
+
+    return () => {
+      window.removeEventListener('online', handleOnline)
+      window.removeEventListener('offline', handleOffline)
+    }
+  }, [])
+
   const capitalize = (str) => {
     if (!str) return ''
     return str
       .toLowerCase()
       .split(' ')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  };
+      .join(' ')
+  }
+
+  const scrollToContent = () => {
+    if (contentContainerRef.current) {
+      contentContainerRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
+  const scrollToTop = () => {
+    if (expensesContainerRef.current) {
+      expensesContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (expensesContainerRef.current) {
+        const { scrollTop } = expensesContainerRef.current
+        setShowScrollToTop(scrollTop > 100) 
+      }
+    }
+
+    const container = expensesContainerRef.current
+    if (container) {
+      container.addEventListener('scroll', handleScroll)
+      handleScroll()
+    }
+
+    return () => {
+      if (container) {
+        container.removeEventListener('scroll', handleScroll)
+      }
+    }
+  }, [])
 
   useEffect(() => {
     const fetchCategories = async () => {
+      // Don't try to fetch if offline
+      if (!navigator.onLine) {
+        setError("You are offline. Cannot fetch categories.")
+        return
+      }
+      
       try {
         const response = await axios.get('/categories')
         setCategories([{ name: 'All Categories', _id: null }, ...response.data.map(cat => ({...cat, name: capitalize(cat.name)}))])
       } catch (err) {
         console.error('Error fetching categories:', err)
-        setError('Failed to fetch categories. Please try again.')
+        if (err.message === 'Network Error') {
+          setError("Network error. Please check your connection.")
+        } else {
+          setError('Failed to fetch categories. Please try again.')
+        }
       }
     }
     fetchCategories()
@@ -102,6 +179,14 @@ const Expenses = () => {
 
   useEffect(() => {
     const fetchItemsByCategory = async (categoryId) => {
+      // Don't try to fetch if offline
+      if (!navigator.onLine) {
+        setError("You are offline. Cannot fetch items.")
+        setItems(['All Items'])
+        setSelectedItem('All Items')
+        return
+      }
+      
       try {
         const response = await axios.get(`/items/${categoryId}`)
         const fetchedItems = response.data.map(item => capitalize(item.name))
@@ -109,7 +194,11 @@ const Expenses = () => {
         setSelectedItem('All Items')
       } catch (err) {
         console.error('Error fetching items:', err)
-        setError('Failed to fetch items. Please try again.')
+        if (err.message === 'Network Error') {
+          setError("Network error. Please check your connection.")
+        } else {
+          setError('Failed to fetch items. Please try again.')
+        }
         setItems(['All Items'])
         setSelectedItem('All Items')
       }
@@ -125,6 +214,13 @@ const Expenses = () => {
 
   useEffect(() => {
     const fetchTotals = async () => {
+      // Don't try to fetch if offline
+      if (!navigator.onLine) {
+        setError("You are offline. Cannot fetch totals.")
+        setIsFetchingTotals(false)
+        return
+      }
+      
       setIsFetchingTotals(true)
       const now = new Date()
       const annualStart = new Date(now.getFullYear(), 0, 1).toISOString().split('T')[0]
@@ -135,7 +231,11 @@ const Expenses = () => {
         setAnnualTotal(annualSum)
       } catch (err) {
         console.error('Error fetching annual total:', err)
-        setError('Failed to fetch annual total.')
+        if (err.message === 'Network Error') {
+          setError("Network error. Please check your connection.")
+        } else {
+          setError('Failed to fetch annual total.')
+        }
       }
 
       const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0]
@@ -146,7 +246,11 @@ const Expenses = () => {
         setMonthlyTotal(monthSum)
       } catch (err) {
         console.error('Error fetching monthly total:', err)
-        setError('Failed to fetch monthly total.')
+        if (err.message === 'Network Error') {
+          setError("Network error. Please check your connection.")
+        } else {
+          setError('Failed to fetch monthly total.')
+        }
       } finally {
         setIsFetchingTotals(false)
       }
@@ -185,22 +289,23 @@ const Expenses = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  // Initial fetch for Table tab on component mount
   useEffect(() => {
     if (!initialFetches.table) {
       handleGetRecords()
       setInitialFetches(prev => ({ ...prev, table: true }))
+      scrollToContent()
     }
   }, [])
 
-  // Fetch data when switching tabs for the first time
   useEffect(() => {
     if (activeTab === 'analytics' && !initialFetches.analytics) {
       handleGetRecords()
       setInitialFetches(prev => ({ ...prev, analytics: true }))
+      scrollToContent()
     } else if (activeTab === 'compare' && !initialFetches.compare) {
       handleCompare()
       setInitialFetches(prev => ({ ...prev, compare: true }))
+      scrollToContent()
     }
   }, [activeTab])
 
@@ -319,6 +424,13 @@ const Expenses = () => {
   }
 
   const handleGetRecords = async () => {
+    // Don't try to fetch if offline
+    if (!navigator.onLine) {
+      setError("You are offline. Cannot fetch records.")
+      setIsFetching(false)
+      return
+    }
+    
     setIsFetching(true)
     
     if (activeTab === 'compare') {
@@ -344,14 +456,26 @@ const Expenses = () => {
       setAppliedEndDate(endDate)
     } catch (err) {
       console.error('Error fetching records:', err)
-      setError('Failed to fetch records. Please try again.')
+      if (err.message === 'Network Error') {
+        setError("Network error. Please check your connection.")
+      } else {
+        setError('Failed to fetch records. Please try again.')
+      }
       setRecords([])
     } finally {
       setIsFetching(false)
+      setTimeout(scrollToContent, 100)
     }
   }
 
   const handleCompare = async () => {
+    // Don't try to fetch if offline
+    if (!navigator.onLine) {
+      setError("You are offline. Cannot fetch comparison data.")
+      setIsFetching(false)
+      return
+    }
+    
     setIsFetching(true)
     
     try {
@@ -379,10 +503,15 @@ const Expenses = () => {
       setAppliedCompareRange(compareRange)
     } catch (err) {
       console.error('Error fetching compare data:', err)
-      setError('Failed to fetch compare data. Please try again.')
+      if (err.message === 'Network Error') {
+        setError("Network error. Please check your connection.")
+      } else {
+        setError('Failed to fetch compare data. Please try again.')
+      }
       setCompareData([])
     } finally {
       setIsFetching(false)
+      setTimeout(scrollToContent, 100)
     }
   }
 
@@ -592,7 +721,7 @@ const Expenses = () => {
           .join(",")
       )
       const csvContent = [headers, ...rows].join("\n")
-      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
+      const blob = new Blob([csvContent], { type: "text/csvcharset=utf-8" })
       saveAs(blob, fileName)
     } else {
       const ws = XLSX.utils.json_to_sheet(exportData)
@@ -645,7 +774,26 @@ const Expenses = () => {
   }
 
   return (
-    <div className='expensesContainer'>
+    <div className='expensesContainer' ref={expensesContainerRef}>
+      {/* Network status toast */}
+      {networkStatus.showToast && (
+        <ToastNotification
+          message={networkStatus.online ? "Connection restored" : "You are offline. Some features may not work."}
+          type={networkStatus.online ? "success" : "error"}
+          icon={faWifi}
+          onClose={() => setNetworkStatus(prev => ({ ...prev, showToast: false }))}
+        />
+      )}
+      
+      {/* Error toast */}
+      {error && (
+        <ToastNotification
+          message={error}
+          type="error"
+          onClose={() => setError(null)}
+        />
+      )}
+      
       <ExpensesHeader 
         activeTab={activeTab}
         annualTotal={annualTotal}
@@ -660,6 +808,7 @@ const Expenses = () => {
         handleDownloadScreenshot={handleDownloadScreenshot}
         analyticsRef={analyticsRef}
         compareRef={compareRef}
+        isOnline={networkStatus.online}
       />
       
       <ControlSection
@@ -714,9 +863,10 @@ const Expenses = () => {
         handleCompareYearSelect={handleCompareYearSelect}
         getCompareDisplayYear={getCompareDisplayYear}
         handleCompare={handleCompare}
+        isOnline={networkStatus.online}
       />
       
-      <div className="contentContainer">
+      <div ref={contentContainerRef} className="expensesContentContainer">
         {activeTab === 'table' && (
           <TableView
             records={records}
@@ -730,6 +880,7 @@ const Expenses = () => {
             capitalize={capitalize}
             formatDate={formatDate}
             isFetching={isFetching}
+            isOnline={networkStatus.online}
           />
         )}
         {activeTab === 'analytics' && (
@@ -743,6 +894,7 @@ const Expenses = () => {
               COLORS={COLORS}
               renderCustomizedLabel={renderCustomizedLabel}
               isFetching={isFetching}
+              isOnline={networkStatus.online}
             />
           </div>
         )}
@@ -756,17 +908,16 @@ const Expenses = () => {
               compareData={compareData}
               formatPrice={formatPrice}
               isFetching={isFetching}
+              isOnline={networkStatus.online}
             />
           </div>
         )}
       </div>
 
-      {error && (
-        <ToastNotification
-          message={error}
-          type="error"
-          onClose={() => setError(null)}
-        />
+      {showScrollToTop && (
+        <div className="scrollToTopButton" onClick={scrollToTop} title="Scroll to Top">
+          <FontAwesomeIcon icon={faAnglesUp} />
+        </div>
       )}
     </div>
   )
