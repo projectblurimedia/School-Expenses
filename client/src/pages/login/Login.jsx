@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import './Login.scss'
+import './login.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 
