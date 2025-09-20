@@ -22,7 +22,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }))
 app.use(express.json({ limit: '50mb' }))
 app.use(cors({
   credentials: true,
-  origin : 'http://localhost:5173'
+  origin : '*'
 }))
 
 app.use('/server/auth', authRoute)

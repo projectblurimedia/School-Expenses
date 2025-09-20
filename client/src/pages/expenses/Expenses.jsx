@@ -775,7 +775,6 @@ const Expenses = () => {
 
   return (
     <div className='expensesContainer' ref={expensesContainerRef}>
-      {/* Network status toast */}
       {networkStatus.showToast && (
         <ToastNotification
           message={networkStatus.online ? "Connection restored" : "You are offline. Some features may not work."}
@@ -785,7 +784,6 @@ const Expenses = () => {
         />
       )}
       
-      {/* Error toast */}
       {error && (
         <ToastNotification
           message={error}
