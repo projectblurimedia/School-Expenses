@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import './AddExpense.scss'
+import './addExpense.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClose, faChevronDown, faChevronUp, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios'
