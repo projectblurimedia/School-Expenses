@@ -373,7 +373,7 @@ const Expenses = () => {
         backgroundColor: '#ffffff'
       })
       const link = document.createElement('a')
-      link.download = `${activeTab}View${new Date()}.png`
+      link.download = `${activeTab}View_${new Date()}.png`
       link.href = canvas.toDataURL('image/png')
       link.click()
     } catch (err) {
@@ -513,7 +513,7 @@ const Expenses = () => {
       fileLabel = "data"
     }
 
-    const fileName = `Expenses_${fileLabel}.${format}`
+    const fileName = `Expenses_${fileLabel}_${new Date()}.${format}`
 
     const exportData = records.map((r, index) => ({
       SNo: index + 1,
