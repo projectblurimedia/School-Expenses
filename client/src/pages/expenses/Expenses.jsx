@@ -220,8 +220,6 @@ const Expenses = () => {
       const annualStart = toISTDateString(new Date(now.getFullYear(), 0, 1));
       const annualEnd = toISTDateString(new Date(now.getFullYear(), 11, 31));
 
-      //console.log("Annual Start:", annualStart, "Annual End:", annualEnd);
-
       try {
         const annualRes = await axios.get(
           `/expenses/filtered?category=All Categories&item=All Items&period=Year&startDate=${annualStart}&endDate=${annualEnd}`
@@ -305,9 +303,10 @@ const Expenses = () => {
       item: filters.item,
       period: filters.dateRange,
       startDate: filters.startDate ? filters.startDate.toISOString().split('T')[0] : null,
-      endDate: filters.endDate ? filters.endDate.toISOString().split('T')[0] : null
-      
+      endDate: filters.endDate ? filters.endDate.toISOString().split('T')[0] : null 
     }
+
+    console.log(periodData)
     try {
       const res = await axios.get(`/expenses/filtered?category=${periodData.category}&item=${periodData.item}&period=${periodData.period}&startDate=${periodData.startDate}&endDate=${periodData.endDate}`)
       setRecords(res.data)
@@ -374,7 +373,7 @@ const Expenses = () => {
         backgroundColor: '#ffffff'
       })
       const link = document.createElement('a')
-      link.download = `${activeTab}View.png`
+      link.download = `${activeTab}View${new Date()}.png`
       link.href = canvas.toDataURL('image/png')
       link.click()
     } catch (err) {

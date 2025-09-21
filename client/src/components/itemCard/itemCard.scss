@@ -37,6 +37,7 @@
   justify-content: space-between;
   align-items: center;
   padding-left: 10px;
+  gap: 10px;
 }
 
 .itemCard__category {
@@ -49,6 +50,7 @@
   border-radius: 7px;
   padding: 3px 8px 3px 4px;
   background: rgba(37, 117, 252, 0.13);
+  max-width: 200px;
 }
 
 .itemCard__price {

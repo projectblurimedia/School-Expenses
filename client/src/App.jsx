@@ -9,7 +9,7 @@ function App() {
   const [isAuth, setIsAuth] = useState(false)
   const [loading, setLoading] = useState(true)
 
-  const axiosBaseUrl = 'http://192.168.31.232:8000/server'
+  const axiosBaseUrl = 'https://school-expenses-backend.onrender.com/server'
   axios.defaults.baseURL = axiosBaseUrl
 
   useEffect(() => {
