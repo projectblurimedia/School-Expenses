@@ -344,15 +344,49 @@ function Home({ setIsAuth = () => {} }) {
       {isAddExpenseVisible && (
         <AddExpense
           onClose={onCloseAddExpense}
-          onExpenseAdded={(newExpense) =>
+          // onExpenseAdded={(newExpense) =>
+          //   setRecords((prev) => [{
+          //     ...newExpense,
+          //     category: capitalizeWords(newExpense.category),
+          //     item: capitalizeWords(newExpense.item),
+          //     person: capitalizeWords(newExpense.person),
+          //     price: newExpense.price
+          //   }, ...prev])
+          // }
+
+          onExpenseAdded={(newExpense) => {
+          // Convert both today's start and end to IST boundaries
+          const now = new Date()
+          const istOffset = 5.5 * 60 * 60 * 1000 // 5 hours 30 minutes in ms
+          const istNow = new Date(now.getTime() + istOffset)
+
+          const year = istNow.getFullYear()
+          const month = istNow.getMonth()
+          const day = istNow.getDate()
+
+          // Build IST 00:00 → 23:59:59
+          const istStart = new Date(year, month, day, 0, 0, 0, 0)
+          const istEnd = new Date(year, month, day, 23, 59, 59, 999)
+
+          // Convert IST boundaries back to UTC for comparison
+          const startUTC = new Date(istStart.getTime() - istOffset)
+          const endUTC = new Date(istEnd.getTime() - istOffset)
+
+          // Parse the expense date
+          const expenseDate = new Date(newExpense.date)
+
+          if (expenseDate >= startUTC && expenseDate <= endUTC) {
             setRecords((prev) => [{
               ...newExpense,
               category: capitalizeWords(newExpense.category),
               item: capitalizeWords(newExpense.item),
               person: capitalizeWords(newExpense.person),
-              price: newExpense.price
+              price: newExpense.price,
+              totalAmount: newExpense.quantity * newExpense.price
             }, ...prev])
           }
+        }}
+
         />
       )}
     </div>
