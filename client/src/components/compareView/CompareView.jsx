@@ -7,14 +7,14 @@ import './compareView.scss'
 const CompareView = ({ appliedCompareYear, appliedCompareRange, appliedCompareStartYear, appliedCompareEndYear, compareData, formatPrice, isFetching }) => {
   const contentContainerRef = useRef(null)
 
-  useEffect(() => {
-    const scrollToContent = () => {
-      if (contentContainerRef.current) {
-        contentContainerRef.current.scrollIntoView({ behavior: 'smooth' })
-      }
-    }
-    setTimeout(scrollToContent, 1000)
-  }, [])
+  // useEffect(() => {
+  //   const scrollToContent = () => {
+  //     if (contentContainerRef.current) {
+  //       contentContainerRef.current.scrollIntoView({ behavior: 'smooth' })
+  //     }
+  //   }
+  //   setTimeout(scrollToContent, 50)
+  // }, [])
 
   const getFilterSummary = () => {
     if (appliedCompareRange === 'Year') {
@@ -34,6 +34,11 @@ const CompareView = ({ appliedCompareYear, appliedCompareRange, appliedCompareSt
     return Array.from(categories)
   }
 
+  // Sort data based on range (months stay in order, years sorted ascending)
+  const sortedData = appliedCompareRange === 'Year' 
+    ? compareData 
+    : [...compareData].sort((a, b) => parseInt(a.name) - parseInt(b.name))
+
   if (isFetching) {
     return (
       <div className="loadingContainer">
@@ -49,10 +54,10 @@ const CompareView = ({ appliedCompareYear, appliedCompareRange, appliedCompareSt
         <div className="filterSummary">{getFilterSummary()}</div>
       </div>
       <div className="compareContainer">
-        {compareData.length > 0 ? (
+        {sortedData.length > 0 ? (
           <>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={compareData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+            <ResponsiveContainer width="100%" height={300} style={{ marginLeft: -10 }}>
+              <LineChart data={sortedData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis 
                   dataKey="name" 
@@ -81,6 +86,7 @@ const CompareView = ({ appliedCompareYear, appliedCompareRange, appliedCompareSt
                   strokeWidth={2}
                   dot={{ r: 4, fill: '#1d9bf0' }}
                   activeDot={{ r: 6 }}
+                  // isAnimationActive={false}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -97,7 +103,7 @@ const CompareView = ({ appliedCompareYear, appliedCompareRange, appliedCompareSt
                   </tr>
                 </thead>
                 <tbody>
-                  {compareData.map(dataPoint => (
+                  {sortedData.map(dataPoint => (
                     <tr key={dataPoint.name}>
                       <td>{dataPoint.name}</td>
                       {getCategories().map(category => (

@@ -90,6 +90,11 @@
         display: flex;
         flex-direction: column;
         gap: 12px;
+
+        .noRecords{
+          font-weight: 500;
+          color: #5f7583;
+        }
         
         .breakdownItem {
           display: flex;

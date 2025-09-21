@@ -46,6 +46,9 @@
     .categoryBreakdown {
       margin-top: 10px;
       width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
 
       h3 {
         font-size: 16px;
@@ -55,13 +58,13 @@
       }
 
       .categoryTable {
-        width: 100%;
         border-collapse: collapse;
         font-size: 14px;
         color: #0f172a;
         border-radius: 5px;
         overflow: hidden;
         font-family: 'Poppins';
+        min-width: 300px;
 
         th, td {
           padding: 8px 12px;

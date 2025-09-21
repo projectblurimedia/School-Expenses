@@ -53,7 +53,6 @@ function Home({ setIsAuth = () => {} }) {
 
     const handleOffline = () => {
       setNetworkStatus({ online: false, showToast: true })
-      setError("You are offline. Some features may not work.")
     }
 
     window.addEventListener('online', handleOnline)
@@ -124,7 +123,6 @@ function Home({ setIsAuth = () => {} }) {
   }
 
   const openAddExpense = () => {
-    // Check if offline before opening
     if (!navigator.onLine) {
       setError("Cannot add expenses while offline. Please check your connection.")
       return
@@ -211,7 +209,7 @@ function Home({ setIsAuth = () => {} }) {
     <div className="homeContainer">
       {networkStatus.showToast && (
         <ToastNotification
-          message={networkStatus.online ? "Connection restored" : "You are offline"}
+          message={networkStatus.online ? "Connection restored" : "You are offline. Some features may not work."}
           type={networkStatus.online ? "success" : "error"}
           icon={faWifi}
           onClose={() => setNetworkStatus(prev => ({ ...prev, showToast: false }))}

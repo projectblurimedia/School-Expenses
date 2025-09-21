@@ -1,6 +1,6 @@
 .expensesContainer {
+  height: 100vh;
   width: 100vw;
-  height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
   background: #f8fafc;
@@ -8,9 +8,9 @@
   flex-direction: column;
   font-family: 'Poppins', 'Inter', 'Segoe UI', sans-serif;
   box-sizing: border-box;
-  padding: 1%;
+  padding: 5px;
   color: #1e293b;
-  gap: 10px;
+  gap: 5px;
   user-select: none;
   position: relative;
 

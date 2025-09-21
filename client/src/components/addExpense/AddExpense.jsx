@@ -508,7 +508,7 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
                 </div>
 
                 <div className="formRow">
-                  <div className="formGroup">
+                  <div className="formGroup datePickerContainer">
                     <label htmlFor="date">{capitalize('Date')}</label>
                     <DatePicker
                       id="date"
@@ -519,6 +519,8 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
                       className="input datePicker"
                       placeholderText={capitalize("Select date")}
                       required
+                      popperClassName="date-picker-popper"
+                      popperPlacement="bottom-start"
                     />
                   </div>
 

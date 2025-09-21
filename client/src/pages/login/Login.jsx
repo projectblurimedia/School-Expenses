@@ -127,12 +127,12 @@ const Login = ({ setIsAuth }) => {
           </button>
         </form>
         
-        <p className="signup-link">
+        {/* <p className="signup-link">
           Don't have an account?{' '}
           <a href="#" onClick={(e) => e.preventDefault()}>
             Sign up
           </a>
-        </p>
+        </p> */}
       </div>
     </div>
   )

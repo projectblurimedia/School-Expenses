@@ -44,7 +44,7 @@ const AnalyticsView = ({
                   cy="50%"
                   outerRadius={100}
                   innerRadius={1}
-                  label={renderCustomizedLabel}
+                  // label={renderCustomizedLabel}
                   labelLine={true}
                 >
                   {pieData.map((entry, index) => (

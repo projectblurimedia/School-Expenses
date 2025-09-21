@@ -1,61 +1,3 @@
-body, html {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  font-family: 'Poppins', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
-  user-select: none;
-}
-
-.expensesContainer {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  width: 100%;
-  background-color: aliceblue;
-}
-
-.contentContainer {
-  flex: 1;
-  padding: 20px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.contentWrapper {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.loadingContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 4px;
-  height: 200px;
-
-  .spinnerIcon {
-    font-size: 24px;
-    color: #1d9bf0;
-    animation: spin 1s linear infinite;
-  }
-  .loadingText {
-    font-weight: 600;
-    color: #203551;
-  }
-}
-
-
-
-@keyframes spin {
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
 .homeContainer {
   position: relative;
   display: flex;
@@ -286,7 +228,7 @@ body, html {
   }
 
   .viewAndCreateButtonsContainer {
-    position: fixed;
+    position: sticky;
     bottom: 20px;
     left: 0;
     right: 0;
@@ -483,8 +425,8 @@ body, html {
     .viewAndCreateButtonsContainer {
       .createButton,
       .viewButton {
-        padding: 8px 12px;
-        font-size: 0.8rem;
+        padding: 12px 12px;
+        font-size: 0.85rem;
 
         svg {
           width: 14px;
@@ -538,6 +480,7 @@ body, html {
       .cardsWrapper {
         display: flex;
         flex-direction: column;
+        align-items: center;
       }
     }
   }

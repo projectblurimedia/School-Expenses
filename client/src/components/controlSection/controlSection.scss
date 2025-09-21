@@ -11,16 +11,16 @@
   
   .tabsContainer {
     display: flex;
-    gap: 4px;
+    gap: 5px;
     background: #f1f5f9;
-    padding: 4px;
+    padding: 3px;
     border-radius: 10px;
     
     .tabButton {
       display: flex;
       align-items: center;
       gap: 4px;
-      padding: 8px 16px;
+      padding: 10px 16px;
       border-radius: 8px;
       border: none;
       outline: none;
@@ -62,7 +62,7 @@
       align-items: center;
       gap: 8px;
       padding: 8px 12px;
-      background: #f1f5f9;
+      background: #0d2741;
       border-radius: 8px;
       
       .filterLabel {
@@ -205,29 +205,32 @@
 
       .calendarContainer {
         position: absolute;
-        top: 105%;
+        top: 110%;
         right: 0;
-        left: auto;
+        min-width: 200px;
         z-index: 20;
         background: #ffffff;
         border: 1px solid #e2e8f0;
         border-radius: 8px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        padding: 10px;
+        padding: 2px;
         font-family: 'Poppins', 'Inter', 'Segoe UI', sans-serif;
 
         .react-datepicker {
-          border: none;
+          width: 100%;
           font-family: 'Poppins', 'Inter', 'Segoe UI', sans-serif;
           background: #ffffff;
           border-radius: 8px;
+          border: 2px solid aliceblue;
+          margin-bottom: -5px;
 
           .react-datepicker__header {
+            min-width: 200px;
             background: #1d9bf0;
             color: aliceblue;
             border-radius: 8px 8px 0 0;
             padding: 10px;
-            border: none;
+
 
             .react-datepicker__current-month,
             .react-datepicker__month-text,
@@ -245,7 +248,7 @@
             padding: 8px;
             border-radius: 4px;
             transition: all 0.2s;
-            margin: 0.166rem;
+            margin: .2rem;
             width: 2.05rem;
             line-height: 1.5rem;
           }
@@ -262,17 +265,23 @@
             color: #1e293b;
             font-weight: 500;
             font-size: 14px;
-            padding: 8px;
+            padding: 5px;
             border-radius: 4px;
             transition: all 0.2s;
-            margin: 0.166rem;
-            width: 2rem;
+            margin: 0.2rem;
+            min-width: 2rem;
             line-height: 2rem;
+
 
             &:hover {
               background: #1d9bf0;
               color: aliceblue;
             }
+          }
+
+          .react-datepicker__month-text,
+          .react-datepicker__year-text {
+            min-width: 5.2rem;
           }
 
           .react-datepicker__day--selected,
@@ -337,7 +346,7 @@
 @media (max-width: 1024px) {
   .controlsSection {
     flex-direction: column;
-    gap: 16px;
+    gap: 10px;
     
     .tabsContainer {
       justify-content: center;
@@ -346,6 +355,7 @@
     .filtersContainer {
       width: 100%;
       justify-content: center;
+      gap: 10px;
     }
   }
 }

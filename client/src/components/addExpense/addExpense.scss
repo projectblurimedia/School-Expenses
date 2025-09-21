@@ -101,6 +101,11 @@
       gap: 5px;
       margin-bottom: 1rem;
 
+      &.datePickerContainer {
+        position: relative;
+        z-index: 1001; // Ensure date picker container has higher z-index
+      }
+
       .inputHeader {
         display: flex;
         justify-content: space-between;
@@ -355,15 +360,19 @@
     }
   }
 
+  /* Fixed Calendar Styling */
+  .react-datepicker-wrapper {
+    display: block;
+    width: 100%;
+  }
+
   .react-datepicker {
     border: none;
     font-family: 'Poppins', 'Inter', 'Segoe UI', sans-serif;
     background: #ffffff;
     border-radius: 8px;
-    width: 100%; /* Ensure DatePicker scales to container width */
-    max-width: 200px; /* Limit max width for larger screens */
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    z-index: 1000; /* Ensure it appears above other elements */
+    z-index: 1002 !important; // Higher z-index to ensure it appears above everything
 
     .react-datepicker__header {
       background: #1d9bf0;
@@ -461,10 +470,18 @@
     }
   }
 
-  .react-datepicker-popper {
-    z-index: 1000; /* Ensure popper is above other elements */
-    width: 100%; /* Make popper responsive */
-    max-width: 200px; /* Consistent with DatePicker max-width */
+  .date-picker-popper {
+    z-index: 1003 !important; // Highest z-index for the popper
+    transform: translate3d(0px, 40px, 0px) !important; // Force proper positioning
+    
+    .react-datepicker {
+      width: 100%;
+      min-width: 250px;
+    }
+  }
+
+  .react-datepicker__triangle {
+    display: none; // Hide the default triangle
   }
 
   @media (max-width: 768px) {
@@ -537,9 +554,8 @@
       }
 
       .react-datepicker {
-        max-width: 100%; /* Scale to container width */
-        font-size: 0.9rem; /* Slightly smaller font for smaller screens */
-
+        min-width: 280px; // Ensure minimum width on mobile
+        
         .react-datepicker__day-name,
         .react-datepicker__day,
         .react-datepicker__month-text,
@@ -551,8 +567,12 @@
         }
       }
 
-      .react-datepicker-popper {
-        max-width: 100%; /* Ensure popper scales with container */
+      .date-picker-popper {
+        transform: translate3d(0px, 35px, 0px) !important;
+        
+        .react-datepicker {
+          min-width: 280px;
+        }
       }
     }
   }
@@ -624,9 +644,8 @@
       }
 
       .react-datepicker {
-        max-width: 100%;
-        font-size: 0.85rem;
-
+        min-width: 260px;
+        
         .react-datepicker__day-name,
         .react-datepicker__day,
         .react-datepicker__month-text,
@@ -638,8 +657,12 @@
         }
       }
 
-      .react-datepicker-popper {
-        max-width: 100%;
+      .date-picker-popper {
+        transform: translate3d(0px, 30px, 0px) !important;
+        
+        .react-datepicker {
+          min-width: 260px;
+        }
       }
     }
   }
@@ -711,9 +734,8 @@
       }
 
       .react-datepicker {
-        max-width: 100%;
-        font-size: 0.8rem;
-
+        min-width: 240px;
+        
         .react-datepicker__day-name,
         .react-datepicker__day,
         .react-datepicker__month-text,
@@ -725,8 +747,12 @@
         }
       }
 
-      .react-datepicker-popper {
-        max-width: 100%;
+      .date-picker-popper {
+        transform: translate3d(0px, 25px, 0px) !important;
+        
+        .react-datepicker {
+          min-width: 240px;
+        }
       }
     }
   }
