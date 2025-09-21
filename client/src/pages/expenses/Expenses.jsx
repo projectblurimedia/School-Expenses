@@ -33,6 +33,10 @@ const Expenses = () => {
   const [showScrollToTop, setShowScrollToTop] = useState(false)
   const [compareData, setCompareData] = useState([])
 
+  const [showExportDropdown, setShowExportDropdown] = useState(false);
+  const exportDropdownRef = useRef(null);
+
+
   // Applied filters (what's currently displayed)
   const [appliedFilters, setAppliedFilters] = useState({
     category: { name: 'All Categories', _id: null },
@@ -146,50 +150,120 @@ const Expenses = () => {
     fetchCategories()
   }, [capitalize])
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   const fetchTotals = async () => {
+  //     if (!navigator.onLine) {
+  //       setError("You are offline. Cannot fetch totals.")
+  //       setIsFetchingTotals(false)
+  //       return
+  //     }
+      
+  //     setIsFetchingTotals(true)
+  //     const now = new Date()
+  //     const annualStart = new Date(now.getFullYear(), 0, 1).toISOString().split('T')[0]
+  //     const annualEnd = new Date(now.getFullYear(), 11, 31).toISOString().split('T')[0]
+  //     try {
+  //       const annualRes = await axios.get(`/expenses/filtered?category=All Categories&item=All Items&period=Year&startDate=${annualStart}&endDate=${annualEnd}`)
+  //       const annualSum = annualRes.data.reduce((acc, r) => acc + r.price, 0)
+  //       setAnnualTotal(annualSum)
+  //     } catch (err) {
+  //       console.error('Error fetching annual total:', err)
+  //       if (err.message === 'Network Error') {
+  //         setError("Network error. Please check your connection.")
+  //       } else {
+  //         setError('Failed to fetch annual total.')
+  //       }
+  //     }
+
+  //     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0]
+  //     const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0]
+  //     try {
+  //       const monthRes = await axios.get(`/expenses/filtered?category=All Categories&item=All Items&period=Month&startDate=${monthStart}&endDate=${monthEnd}`)
+  //       const monthSum = monthRes.data.reduce((acc, r) => acc + r.price, 0)
+  //       setMonthlyTotal(monthSum)
+  //     } catch (err) {
+  //       console.error('Error fetching monthly total:', err)
+  //       if (err.message === 'Network Error') {
+  //         setError("Network error. Please check your connection.")
+  //       } else {
+  //         setError('Failed to fetch monthly total.')
+  //       }
+  //     } finally {
+  //       setIsFetchingTotals(false)
+  //     }
+  //   }
+  //   fetchTotals()
+  // }, [])
+
+  useEffect(() => { 
     const fetchTotals = async () => {
       if (!navigator.onLine) {
-        setError("You are offline. Cannot fetch totals.")
-        setIsFetchingTotals(false)
-        return
+        setError("You are offline. Cannot fetch totals.");
+        setIsFetchingTotals(false);
+        return;
       }
-      
-      setIsFetchingTotals(true)
-      const now = new Date()
-      const annualStart = new Date(now.getFullYear(), 0, 1).toISOString().split('T')[0]
-      const annualEnd = new Date(now.getFullYear(), 11, 31).toISOString().split('T')[0]
+
+      setIsFetchingTotals(true);
+
+      const now = new Date();
+
+      // Function to format date in IST as YYYY-MM-DD
+      const toISTDateString = (date) => {
+        const istOffset = 5.5 * 60; // IST = UTC +5:30 in minutes
+        const localTime = new Date(date.getTime() + istOffset * 60000);
+        const year = localTime.getFullYear();
+        const month = String(localTime.getMonth() + 1).padStart(2, '0');
+        const day = String(localTime.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      };
+
+      const annualStart = toISTDateString(new Date(now.getFullYear(), 0, 1));
+      const annualEnd = toISTDateString(new Date(now.getFullYear(), 11, 31));
+
+      //console.log("Annual Start:", annualStart, "Annual End:", annualEnd);
+
       try {
-        const annualRes = await axios.get(`/expenses/filtered?category=All Categories&item=All Items&period=Year&startDate=${annualStart}&endDate=${annualEnd}`)
-        const annualSum = annualRes.data.reduce((acc, r) => acc + r.price, 0)
-        setAnnualTotal(annualSum)
+        const annualRes = await axios.get(
+          `/expenses/filtered?category=All Categories&item=All Items&period=Year&startDate=${annualStart}&endDate=${annualEnd}`
+        );
+        const annualSum = annualRes.data.reduce((acc, r) => acc + r.price, 0);
+        setAnnualTotal(annualSum);
       } catch (err) {
-        console.error('Error fetching annual total:', err)
+        console.error('Error fetching annual total:', err);
         if (err.message === 'Network Error') {
-          setError("Network error. Please check your connection.")
+          setError("Network error. Please check your connection.");
         } else {
-          setError('Failed to fetch annual total.')
+          setError('Failed to fetch annual total.');
         }
       }
 
-      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0]
-      const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0]
+      const monthStart = toISTDateString(new Date(now.getFullYear(), now.getMonth(), 1));
+      const monthEnd = toISTDateString(new Date(now.getFullYear(), now.getMonth() + 1, 0));
+
+      //console.log("Monthly Start:", monthStart, "Monthly End:", monthEnd);
+
+
       try {
-        const monthRes = await axios.get(`/expenses/filtered?category=All Categories&item=All Items&period=Month&startDate=${monthStart}&endDate=${monthEnd}`)
-        const monthSum = monthRes.data.reduce((acc, r) => acc + r.price, 0)
-        setMonthlyTotal(monthSum)
+        const monthRes = await axios.get(
+          `/expenses/filtered?category=All Categories&item=All Items&period=Month&startDate=${monthStart}&endDate=${monthEnd}`
+        );
+        const monthSum = monthRes.data.reduce((acc, r) => acc + r.price, 0);
+        setMonthlyTotal(monthSum);
       } catch (err) {
-        console.error('Error fetching monthly total:', err)
+        console.error('Error fetching monthly total:', err);
         if (err.message === 'Network Error') {
-          setError("Network error. Please check your connection.")
+          setError("Network error. Please check your connection.");
         } else {
-          setError('Failed to fetch monthly total.')
+          setError('Failed to fetch monthly total.');
         }
       } finally {
-        setIsFetchingTotals(false)
+        setIsFetchingTotals(false);
       }
-    }
-    fetchTotals()
-  }, [])
+    };
+
+    fetchTotals();
+  }, []);
+
 
   useEffect(() => {
     if (!initialFetches.table) {
@@ -232,6 +306,7 @@ const Expenses = () => {
       period: filters.dateRange,
       startDate: filters.startDate ? filters.startDate.toISOString().split('T')[0] : null,
       endDate: filters.endDate ? filters.endDate.toISOString().split('T')[0] : null
+      
     }
     try {
       const res = await axios.get(`/expenses/filtered?category=${periodData.category}&item=${periodData.item}&period=${periodData.period}&startDate=${periodData.startDate}&endDate=${periodData.endDate}`)
@@ -499,6 +574,9 @@ const Expenses = () => {
         handleDownloadScreenshot={handleDownloadScreenshot}
         analyticsRef={analyticsRef}
         compareRef={compareRef}
+        showExportDropdown={showExportDropdown}
+        setShowExportDropdown={setShowExportDropdown}
+        exportDropdownRef={exportDropdownRef}
         isOnline={networkStatus.online}
       />
       
