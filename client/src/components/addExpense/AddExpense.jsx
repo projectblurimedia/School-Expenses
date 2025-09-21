@@ -236,6 +236,7 @@ const AddExpense = ({ onClose, onExpenseAdded }) => {
       description: capitalize(formData.description),
       date: formData.date.toISOString()
     }
+    console.log(expense)
 
     setLoading(prev => ({ ...prev, submitting: true }))
     try {

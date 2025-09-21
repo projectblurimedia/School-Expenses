@@ -144,6 +144,7 @@ function Home({ setIsAuth = () => {} }) {
       setIsLoading(true)
       const today = new Date()
       const todayISO = today.toISOString().split('T')[0]
+      console.log(today)
       try {
         const res = await axios.get(
           `/expenses/filtered?category=All Categories&item=All Items&period=Date&startDate=${todayISO}&endDate=${todayISO}`
