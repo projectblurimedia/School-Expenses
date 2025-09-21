@@ -33,6 +33,10 @@ const Expenses = () => {
   const [showScrollToTop, setShowScrollToTop] = useState(false)
   const [compareData, setCompareData] = useState([])
 
+  const [showExportDropdown, setShowExportDropdown] = useState(false);
+  const exportDropdownRef = useRef(null);
+
+
   // Applied filters (what's currently displayed)
   const [appliedFilters, setAppliedFilters] = useState({
     category: { name: 'All Categories', _id: null },
@@ -570,6 +574,9 @@ const Expenses = () => {
         handleDownloadScreenshot={handleDownloadScreenshot}
         analyticsRef={analyticsRef}
         compareRef={compareRef}
+        showExportDropdown={showExportDropdown}
+        setShowExportDropdown={setShowExportDropdown}
+        exportDropdownRef={exportDropdownRef}
         isOnline={networkStatus.online}
       />
       
