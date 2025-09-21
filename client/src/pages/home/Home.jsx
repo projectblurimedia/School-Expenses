@@ -261,7 +261,7 @@ function Home({ setIsAuth = () => {} }) {
 
         {isLoading ? (
           <div className="loadingContainer">
-            <FontAwesomeIcon icon={faHourglassStart} className="spinnerIcon" />
+            <FontAwesomeIcon icon={faHourglassStart} spin className="spinnerIcon" />
             <div className="loadingText">Loading...</div>
           </div>
         ) : (
